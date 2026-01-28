@@ -26,8 +26,7 @@ FEISHU_DRIVE_FOLDER_TOKEN = "YOC5fKwB4lqSxIdvUSVc6YmEnLb"
 FEISHU_DRIVE_FOLDER_NAME = "SOP Reports"
 FEISHU_DEBUG = True
 NETLIFY_SITE_URL = os.environ.get("NETLIFY_SITE_URL", "").strip()
-HOST_BASE_URL = NETLIFY_SITE_URL or "https://vibecoder-bhkaw-u56467.vm.elestio.app:8445"
-UPLOAD_API_URL = "https://vibecoder-bhkaw-u56467.vm.elestio.app:8445/upload"
+HOST_BASE_URL = NETLIFY_SITE_URL
 REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_HTML_DIR = os.path.join(REPO_DIR, "output")
 PUBLISH_DIR = OUTPUT_HTML_DIR
@@ -1041,35 +1040,6 @@ def send_reports_to_feishu(output_dir, chat_id=None):
         return False
 
 
-def upload_files_via_http(output_dir, files):
-    uploaded = 0
-    for name in files:
-        p = os.path.join(output_dir, name)
-        if not os.path.exists(p):
-            continue
-        try:
-            with open(p, "rb") as f:
-                r = requests.post(UPLOAD_API_URL, files={"file": (name, f)})
-            if r.status_code != 200:
-                detail = r.text.strip()
-                if len(detail) > 300:
-                    detail = detail[:300] + "..."
-                print(f"Upload failed for {name}: {r.status_code} {detail}")
-                continue
-            data = r.json()
-            if not data.get("success"):
-                print(f"Upload failed for {name}: {data}")
-                continue
-            uploaded += 1
-        except Exception as e:
-            print(f"Upload error for {name}: {e}")
-    if uploaded == 0:
-        print("No files uploaded.")
-        return False
-    print(f"Uploaded {uploaded} files to host.")
-    return True
-
-
 def sync_report_pages_to_repo(output_dir, publish_dir):
     os.makedirs(publish_dir, exist_ok=True)
     copied = 0
@@ -1303,8 +1273,13 @@ def generate_html_reports(excel_path, html_output_dir):
 
 def get_report_page_links():
     links = []
+    if not HOST_BASE_URL:
+        print("WARNING: NETLIFY_SITE_URL not set; using relative links.")
     for filename, _, label in get_report_pages():
-        url = f"{HOST_BASE_URL.rstrip('/')}/{filename}"
+        if HOST_BASE_URL:
+            url = f"{HOST_BASE_URL.rstrip('/')}/{filename}"
+        else:
+            url = filename
         links.append((url, label))
     return links
 
