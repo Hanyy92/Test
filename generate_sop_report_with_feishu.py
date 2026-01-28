@@ -7,6 +7,7 @@ import glob
 import requests
 import shutil
 import subprocess
+import importlib.util
 from datetime import datetime
 
 import pandas as pd
@@ -30,6 +31,7 @@ REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_HTML_DIR = os.path.join(REPO_DIR, "output")
 PUBLISH_DIR = OUTPUT_HTML_DIR
 SOURCE_HTML_DIR = "D:/Daily reports/SOP/output"
+HTML_GENERATOR_SCRIPT = "D:/Daily reports/SOP/generate_sop_report_html.py"
 
 # ============================================================================
 # REPORT GENERATION CONFIG
@@ -1125,6 +1127,26 @@ def get_report_pages():
     ]
 
 
+def generate_html_reports_with_original_script():
+    if not os.path.exists(HTML_GENERATOR_SCRIPT):
+        print(f"ERROR: HTML generator script not found: {HTML_GENERATOR_SCRIPT}")
+        return False
+    try:
+        spec = importlib.util.spec_from_file_location("sop_html_generator", HTML_GENERATOR_SCRIPT)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.SKIP_UPLOAD_AND_SEND = True
+        if NETLIFY_SITE_URL:
+            module.HOST_BASE_URL = NETLIFY_SITE_URL
+        module.main()
+        return True
+    except Exception as e:
+        print(f"ERROR: HTML generator failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
 def copy_html_reports(source_dir, html_output_dir):
     os.makedirs(html_output_dir, exist_ok=True)
     copied = 0
@@ -1164,6 +1186,8 @@ def get_report_page_links():
 def main():
     o = generate_sop_report()
     if o is None:
+        return
+    if not generate_html_reports_with_original_script():
         return
     if not copy_html_reports(SOURCE_HTML_DIR, OUTPUT_HTML_DIR):
         return
