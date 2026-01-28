@@ -5,6 +5,9 @@ import sys
 import json
 import glob
 import requests
+import shutil
+import subprocess
+import html
 from datetime import datetime
 
 import pandas as pd
@@ -22,8 +25,12 @@ FEISHU_CHAT_ID = "oc_1ab849cf11a8505ae909eff1928cd052"  # ME CM ONLY
 FEISHU_DRIVE_FOLDER_TOKEN = "YOC5fKwB4lqSxIdvUSVc6YmEnLb"
 FEISHU_DRIVE_FOLDER_NAME = "SOP Reports"
 FEISHU_DEBUG = True
-HOST_BASE_URL = "https://vibecoder-bhkaw-u56467.vm.elestio.app:8445"
+NETLIFY_SITE_URL = os.environ.get("NETLIFY_SITE_URL", "").strip()
+HOST_BASE_URL = NETLIFY_SITE_URL or "https://vibecoder-bhkaw-u56467.vm.elestio.app:8445"
 UPLOAD_API_URL = "https://vibecoder-bhkaw-u56467.vm.elestio.app:8445/upload"
+REPO_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_HTML_DIR = os.path.join(REPO_DIR, "output")
+PUBLISH_DIR = OUTPUT_HTML_DIR
 
 # ============================================================================
 # REPORT GENERATION CONFIG
@@ -1015,8 +1022,9 @@ def send_reports_to_feishu(output_dir, chat_id=None):
             print("ERROR: No chats")
             return False
         chat_id = chats[0].get("chat_id")
-    page_files = [name for name, _, _ in get_report_pages()]
-    upload_files_via_http(output_dir, page_files)
+    if not publish_reports_to_repo(output_dir):
+        print("ERROR: Failed to publish reports to repo.")
+        return False
     links = get_report_page_links()
     if not links:
         print("ERROR: No report page links")
@@ -1062,6 +1070,79 @@ def upload_files_via_http(output_dir, files):
     return True
 
 
+def sync_report_pages_to_repo(output_dir, publish_dir):
+    os.makedirs(publish_dir, exist_ok=True)
+    copied = 0
+    missing = []
+    same_dir = os.path.abspath(output_dir) == os.path.abspath(publish_dir)
+    for filename, _, _ in get_report_pages():
+        src = os.path.join(output_dir, filename)
+        if not os.path.exists(src):
+            missing.append(filename)
+            continue
+        if not same_dir:
+            dst = os.path.join(publish_dir, filename)
+            shutil.copy2(src, dst)
+            copied += 1
+        if filename == "Performance_Reports_overview.html":
+            index_path = os.path.join(publish_dir, "index.html")
+            if os.path.abspath(src) != os.path.abspath(index_path):
+                shutil.copy2(src, index_path)
+    if missing:
+        print(f"WARNING: Missing HTML pages: {', '.join(missing)}")
+    if copied == 0 and not same_dir:
+        print("ERROR: No HTML pages copied to publish dir.")
+        return False
+    if same_dir:
+        print(f"Using HTML output dir as publish dir: {publish_dir}")
+    else:
+        print(f"Copied {copied} HTML pages to publish dir: {publish_dir}")
+    return True
+
+
+def git_has_changes(repo_dir):
+    r = subprocess.run(
+        ["git", "status", "--porcelain"],
+        cwd=repo_dir,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if r.returncode != 0:
+        print(f"Git status failed: {r.stderr.strip()}")
+        return False, False
+    return True, bool(r.stdout.strip())
+
+
+def git_commit_and_push(repo_dir, message):
+    r = subprocess.run(["git", "add", "-A"], cwd=repo_dir, check=False)
+    if r.returncode != 0:
+        print("Git add failed.")
+        return False
+    ok, has_changes = git_has_changes(repo_dir)
+    if not ok:
+        return False
+    if not has_changes:
+        print("No changes to commit.")
+        return True
+    r = subprocess.run(["git", "commit", "-m", message], cwd=repo_dir, check=False)
+    if r.returncode != 0:
+        print("Git commit failed.")
+        return False
+    r = subprocess.run(["git", "push"], cwd=repo_dir, check=False)
+    if r.returncode != 0:
+        print("Git push failed.")
+        return False
+    return True
+
+
+def publish_reports_to_repo(output_dir):
+    if not sync_report_pages_to_repo(output_dir, PUBLISH_DIR):
+        return False
+    msg = f"Update SOP HTML dashboards {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    return git_commit_and_push(REPO_DIR, msg)
+
+
 def get_report_pages():
     return [
         ("Performance_Reports_overview.html", "overview", "**ME Total**"),
@@ -1072,6 +1153,152 @@ def get_report_pages():
         ("Performance_Reports_jolp_ranking.html", "jolp-ranking", "**JOLP Ranking**"),
         ("Performance_Reports_jolp_totals.html", "jolp-totals", "**JOLP Totals**"),
     ]
+
+
+def _html_page(title, body):
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{html.escape(title)}</title>
+  <style>
+    :root {{
+      color-scheme: light;
+    }}
+    body {{
+      margin: 0;
+      font-family: "Segoe UI", "Calibri", "Arial", sans-serif;
+      background: #f5f6f8;
+      color: #1b1b1b;
+    }}
+    header {{
+      background: #1f2937;
+      color: #fff;
+      padding: 16px 20px;
+    }}
+    main {{
+      padding: 16px 20px 32px;
+    }}
+    table {{
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }}
+    td, th {{
+      border: 1px solid #e5e7eb;
+      padding: 6px 8px;
+      font-size: 12px;
+      text-align: center;
+      white-space: nowrap;
+    }}
+    tr:nth-child(even) td {{
+      background: #fafafa;
+    }}
+    a {{
+      color: #0b5fff;
+      text-decoration: none;
+    }}
+    a:hover {{
+      text-decoration: underline;
+    }}
+    .links {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }}
+    .card {{
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }}
+  </style>
+</head>
+<body>
+  <header>
+    <h1 style="margin:0;font-size:18px;">{html.escape(title)}</h1>
+  </header>
+  <main>
+    {body}
+  </main>
+</body>
+</html>
+"""
+
+
+def _worksheet_to_html_table(ws):
+    rows = list(ws.iter_rows(values_only=True))
+    max_cols = 0
+    for row in rows:
+        for idx, value in enumerate(row):
+            if value is not None and str(value).strip() != "":
+                max_cols = max(max_cols, idx + 1)
+    if max_cols == 0:
+        return "<p>No data.</p>"
+    table_rows = []
+    for row in rows:
+        cells = []
+        for i in range(max_cols):
+            value = row[i] if i < len(row) else ""
+            cell_text = "" if value is None else html.escape(str(value))
+            cells.append(f"<td>{cell_text}</td>")
+        table_rows.append("<tr>" + "".join(cells) + "</tr>")
+    return "<table>" + "".join(table_rows) + "</table>"
+
+
+def generate_html_reports(excel_path, html_output_dir):
+    from openpyxl import load_workbook
+
+    os.makedirs(html_output_dir, exist_ok=True)
+    wb = load_workbook(excel_path, data_only=True)
+    sheet_map = {
+        "Performance_Reports_eglp_teams.html": "EGLP Teams",
+        "Performance_Reports_eglp_ranking.html": "EGLP Ranking",
+        "Performance_Reports_eglp_totals.html": "EGLP Teams Totals",
+        "Performance_Reports_jolp_teams.html": "JOLP Teams",
+        "Performance_Reports_jolp_ranking.html": "JOLP Ranking",
+        "Performance_Reports_jolp_totals.html": "JOLP Teams Totals",
+    }
+    generated = 0
+    for filename, sheet_name in sheet_map.items():
+        if sheet_name not in wb.sheetnames:
+            print(f"WARNING: Sheet not found: {sheet_name}")
+            continue
+        ws = wb[sheet_name]
+        table_html = _worksheet_to_html_table(ws)
+        page_html = _html_page(sheet_name, table_html)
+        out_path = os.path.join(html_output_dir, filename)
+        with open(out_path, "w", encoding="utf-8") as f:
+            f.write(page_html)
+        generated += 1
+
+    links = []
+    for filename, _, label in get_report_pages():
+        if filename == "Performance_Reports_overview.html":
+            continue
+        label_text = label.replace("**", "")
+        links.append(f'<div class="card"><a href="{html.escape(filename)}">{html.escape(label_text)}</a></div>')
+    overview_body = (
+        f"<p>Report generated: {html.escape(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}</p>"
+        + '<div class="links">'
+        + "".join(links)
+        + "</div>"
+    )
+    overview_path = os.path.join(html_output_dir, "Performance_Reports_overview.html")
+    with open(overview_path, "w", encoding="utf-8") as f:
+        f.write(_html_page("SOP Report Overview", overview_body))
+    generated += 1
+
+    if generated == 0:
+        print("ERROR: No HTML reports generated.")
+        return False
+    print(f"Generated {generated} HTML reports in {html_output_dir}")
+    return True
 
 
 def get_report_page_links():
@@ -1086,7 +1313,9 @@ def main():
     o = generate_sop_report()
     if o is None:
         return
-    send_reports_to_feishu(os.path.dirname(o), FEISHU_CHAT_ID)
+    if not generate_html_reports(o, OUTPUT_HTML_DIR):
+        return
+    send_reports_to_feishu(OUTPUT_HTML_DIR, FEISHU_CHAT_ID)
 
 
 if __name__ == "__main__":
