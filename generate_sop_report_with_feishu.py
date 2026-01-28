@@ -7,7 +7,6 @@ import glob
 import requests
 import shutil
 import subprocess
-import html
 from datetime import datetime
 
 import pandas as pd
@@ -30,6 +29,7 @@ HOST_BASE_URL = NETLIFY_SITE_URL
 REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_HTML_DIR = os.path.join(REPO_DIR, "output")
 PUBLISH_DIR = OUTPUT_HTML_DIR
+SOURCE_HTML_DIR = "D:/Daily reports/SOP/output"
 
 # ============================================================================
 # REPORT GENERATION CONFIG
@@ -1125,149 +1125,26 @@ def get_report_pages():
     ]
 
 
-def _html_page(title, body):
-    return f"""<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{html.escape(title)}</title>
-  <style>
-    :root {{
-      color-scheme: light;
-    }}
-    body {{
-      margin: 0;
-      font-family: "Segoe UI", "Calibri", "Arial", sans-serif;
-      background: #f5f6f8;
-      color: #1b1b1b;
-    }}
-    header {{
-      background: #1f2937;
-      color: #fff;
-      padding: 16px 20px;
-    }}
-    main {{
-      padding: 16px 20px 32px;
-    }}
-    table {{
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }}
-    td, th {{
-      border: 1px solid #e5e7eb;
-      padding: 6px 8px;
-      font-size: 12px;
-      text-align: center;
-      white-space: nowrap;
-    }}
-    tr:nth-child(even) td {{
-      background: #fafafa;
-    }}
-    a {{
-      color: #0b5fff;
-      text-decoration: none;
-    }}
-    a:hover {{
-      text-decoration: underline;
-    }}
-    .links {{
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-    }}
-    .card {{
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }}
-  </style>
-</head>
-<body>
-  <header>
-    <h1 style="margin:0;font-size:18px;">{html.escape(title)}</h1>
-  </header>
-  <main>
-    {body}
-  </main>
-</body>
-</html>
-"""
-
-
-def _worksheet_to_html_table(ws):
-    rows = list(ws.iter_rows(values_only=True))
-    max_cols = 0
-    for row in rows:
-        for idx, value in enumerate(row):
-            if value is not None and str(value).strip() != "":
-                max_cols = max(max_cols, idx + 1)
-    if max_cols == 0:
-        return "<p>No data.</p>"
-    table_rows = []
-    for row in rows:
-        cells = []
-        for i in range(max_cols):
-            value = row[i] if i < len(row) else ""
-            cell_text = "" if value is None else html.escape(str(value))
-            cells.append(f"<td>{cell_text}</td>")
-        table_rows.append("<tr>" + "".join(cells) + "</tr>")
-    return "<table>" + "".join(table_rows) + "</table>"
-
-
-def generate_html_reports(excel_path, html_output_dir):
-    from openpyxl import load_workbook
-
+def copy_html_reports(source_dir, html_output_dir):
     os.makedirs(html_output_dir, exist_ok=True)
-    wb = load_workbook(excel_path, data_only=True)
-    sheet_map = {
-        "Performance_Reports_eglp_teams.html": "EGLP Teams",
-        "Performance_Reports_eglp_ranking.html": "EGLP Ranking",
-        "Performance_Reports_eglp_totals.html": "EGLP Teams Totals",
-        "Performance_Reports_jolp_teams.html": "JOLP Teams",
-        "Performance_Reports_jolp_ranking.html": "JOLP Ranking",
-        "Performance_Reports_jolp_totals.html": "JOLP Teams Totals",
-    }
-    generated = 0
-    for filename, sheet_name in sheet_map.items():
-        if sheet_name not in wb.sheetnames:
-            print(f"WARNING: Sheet not found: {sheet_name}")
+    copied = 0
+    missing = []
+    for filename, _, _ in get_report_pages():
+        src = os.path.join(source_dir, filename)
+        if not os.path.exists(src):
+            missing.append(filename)
             continue
-        ws = wb[sheet_name]
-        table_html = _worksheet_to_html_table(ws)
-        page_html = _html_page(sheet_name, table_html)
-        out_path = os.path.join(html_output_dir, filename)
-        with open(out_path, "w", encoding="utf-8") as f:
-            f.write(page_html)
-        generated += 1
-
-    links = []
-    for filename, _, label in get_report_pages():
+        dst = os.path.join(html_output_dir, filename)
+        shutil.copy2(src, dst)
+        copied += 1
         if filename == "Performance_Reports_overview.html":
-            continue
-        label_text = label.replace("**", "")
-        links.append(f'<div class="card"><a href="{html.escape(filename)}">{html.escape(label_text)}</a></div>')
-    overview_body = (
-        f"<p>Report generated: {html.escape(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}</p>"
-        + '<div class="links">'
-        + "".join(links)
-        + "</div>"
-    )
-    overview_path = os.path.join(html_output_dir, "Performance_Reports_overview.html")
-    with open(overview_path, "w", encoding="utf-8") as f:
-        f.write(_html_page("SOP Report Overview", overview_body))
-    generated += 1
-
-    if generated == 0:
-        print("ERROR: No HTML reports generated.")
+            shutil.copy2(src, os.path.join(html_output_dir, "index.html"))
+    if missing:
+        print(f"WARNING: Missing HTML pages in source dir: {', '.join(missing)}")
+    if copied == 0:
+        print("ERROR: No HTML reports copied.")
         return False
-    print(f"Generated {generated} HTML reports in {html_output_dir}")
+    print(f"Copied {copied} HTML reports from {source_dir} to {html_output_dir}")
     return True
 
 
@@ -1288,7 +1165,7 @@ def main():
     o = generate_sop_report()
     if o is None:
         return
-    if not generate_html_reports(o, OUTPUT_HTML_DIR):
+    if not copy_html_reports(SOURCE_HTML_DIR, OUTPUT_HTML_DIR):
         return
     send_reports_to_feishu(OUTPUT_HTML_DIR, FEISHU_CHAT_ID)
 

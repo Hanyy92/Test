@@ -1,72 +1,628 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>JOLP Teams Totals</title>
-  <style>
-    :root {
-      color-scheme: light;
-    }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", "Calibri", "Arial", sans-serif;
-      background: #f5f6f8;
-      color: #1b1b1b;
-    }
-    header {
-      background: #1f2937;
-      color: #fff;
-      padding: 16px 20px;
-    }
-    main {
-      padding: 16px 20px 32px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    td, th {
-      border: 1px solid #e5e7eb;
-      padding: 6px 8px;
-      font-size: 12px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    tr:nth-child(even) td {
-      background: #fafafa;
-    }
-    a {
-      color: #0b5fff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .links {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOP Performance Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #1a365d;
+            --primary-foreground: #ffffff;
+            --background: #ffffff;
+            --foreground: #1a365d;
+            --muted: #f4f6f8;
+            --muted-foreground: #64748b;
+            --border: #e2e8f0;
+            --card: #ffffff;
+            --card-foreground: #1a365d;
+            --destructive: #dc2626;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --radius: 0.5rem;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--muted);
+            min-height: 100vh;
+            color: var(--foreground);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            margin-bottom: 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-foreground);
+        }
+
+        .header-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        .header-subtitle {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+        }
+
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--foreground);
+            border-bottom-color: var(--border);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Sub-tab Navigation */
+        .sub-tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--muted);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 16px;
+            margin: -24px -24px 24px -24px;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .sub-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sub-tab-btn:hover {
+            background: rgba(26, 54, 93, 0.1);
+            color: var(--foreground);
+        }
+
+        .sub-tab-btn.active {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .sub-tab-content {
+            display: none;
+        }
+
+        .sub-tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .table-container h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--muted);
+            padding: 16px 12px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--muted-foreground);
+            border-bottom: 1px solid var(--border);
+            white-space: normal;
+            word-wrap: break-word;
+            min-height: 50px;
+            vertical-align: middle;
+        }
+
+        th.left {
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--foreground);
+            text-align: center;
+        }
+
+        td.left {
+            text-align: left;
+        }
+
+        tr:hover {
+            background: var(--muted);
+        }
+
+        .total-row {
+            background: var(--muted) !important;
+            font-weight: 600;
+        }
+
+        /* Performance Badge Pills */
+        .color-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-weight: 500;
+            min-width: 60px;
+            font-size: 13px;
+        }
+
+        .scale-very-low { background: #F8696B; color: #000; }
+        .scale-low { background: #FCAA75; color: #000; }
+        .scale-medium-low { background: #FFEB84; color: #000; }
+        .scale-medium { background: #C6E5B5; color: #000; }
+        .scale-medium-high { background: #9FD899; color: #000; }
+        .scale-high { background: #63BE7B; color: #000; }
+
+        /* Team detail section */
+        .team-detail {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .team-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--muted);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .team-detail-header:hover {
+            background: #e9ecef;
+        }
+
+        .team-detail-header h3 {
+            color: var(--foreground);
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-detail-header .toggle-icon {
+            font-size: 12px;
+            color: var(--muted-foreground);
+            transition: transform 0.2s ease;
+        }
+
+        .team-detail-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .team-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .team-stat {
+            background: var(--primary);
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            text-align: center;
+        }
+
+        .team-stat-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.8);
+            letter-spacing: 0.5px;
+        }
+
+        .team-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-foreground);
+        }
+
+        .team-detail-body {
+            padding: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .team-detail-body.collapsed {
+            max-height: 0 !important;
+            padding: 0;
+        }
+
+        .team-detail-body table {
+            margin: 0;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            margin-left: 8px;
+        }
+
+        /* Timestamp */
+        .timestamp {
+            color: var(--muted-foreground);
+            font-size: 12px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--muted);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: var(--radius);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted-foreground);
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1 style="margin:0;font-size:18px;">JOLP Teams Totals</h1>
-  </header>
-  <main>
-    <table><tr><td>SOP Report - JOLP Teams Totals</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Group</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-JOLP08小组</td><td>517</td><td>0.9245647969052224</td><td>0</td><td>481</td><td>0.9812889812889813</td><td>0</td><td>1129</td><td>0.9610274579273693</td><td>0</td><td>1844</td><td>0.9940347071583514</td><td>0</td></tr><tr><td>MEAdult-JOLP01小组</td><td>344</td><td>0.9215116279069767</td><td>0.002906976744186046</td><td>0</td><td>0</td><td>0</td><td>776</td><td>0.9510309278350515</td><td>0.00902061855670103</td><td>1363</td><td>0.9948642699926632</td><td>0</td></tr><tr><td>ME-JOLP04小组</td><td>237</td><td>0.9156118143459916</td><td>0</td><td>393</td><td>0.9872773536895675</td><td>0</td><td>769</td><td>0.9232769830949284</td><td>0.02210663198959688</td><td>1268</td><td>0.9929022082018928</td><td>0</td></tr><tr><td>ME-JOLP06小组</td><td>376</td><td>0.9148936170212766</td><td>0.007978723404255319</td><td>366</td><td>0.9808743169398907</td><td>0</td><td>1090</td><td>0.9467889908256881</td><td>0.01009174311926606</td><td>1505</td><td>0.9933554817275747</td><td>0</td></tr><tr><td>ME-JOLP02小组</td><td>300</td><td>0.9133333333333333</td><td>0</td><td>472</td><td>0.8792372881355932</td><td>0</td><td>1416</td><td>0.903954802259887</td><td>0.02330508474576271</td><td>1931</td><td>0.9684101501812532</td><td>0</td></tr><tr><td>ME-JOLP03小组</td><td>256</td><td>0.91015625</td><td>0</td><td>528</td><td>1</td><td>0</td><td>1330</td><td>0.9631578947368421</td><td>0</td><td>1943</td><td>0.9984559958826557</td><td>0</td></tr><tr><td>TOTAL</td><td>2030</td><td>0.9166785732521334</td><td>0.001814283358073561</td><td>2240</td><td>0.8047796566756721</td><td>0</td><td>6510</td><td>0.9415395094466277</td><td>0.01075401306855445</td><td>9854</td><td>0.990337135524065</td><td>0</td></tr></table>
-  </main>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="header-title">SOP Performance Report</div>
+                    <div class="header-subtitle">Generated: 2026-01-28 12:15:15</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+        <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+        <button class="tab-btn" onclick="showTab('eglp-teams')">EGLP Teams</button>
+        <button class="tab-btn" onclick="showTab('eglp-ranking')">EGLP Ranking</button>
+        <button class="tab-btn" onclick="showTab('eglp-totals')">EGLP Totals</button>
+        <button class="tab-btn" onclick="showTab('jolp-teams')">JOLP Teams</button>
+        <button class="tab-btn" onclick="showTab('jolp-ranking')">JOLP Ranking</button>
+        <button class="tab-btn" onclick="showTab('jolp-totals')">JOLP Totals</button>
+    </nav>
+
+    <div class="container">
+
+    <style>
+        .tab-nav { display: none; }
+        .tab-content { display: block; }
+        .tab-content.active { display: block; }
+        .header { position: static; }
+    </style>
+    
+        <div id="jolp-totals" class="tab-content active">
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Teams Summary</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="left" style="width: 200px;">Team</th>
+                        <th>First call<br><small style="font-weight:400;">Total</small></th>
+                        <th>First call<br><small style="font-weight:400;">Finished</small></th>
+                        <th>Service warning - absence<br><small style="font-weight:400;">Total</small></th>
+                        <th>Service warning - absence<br><small style="font-weight:400;">Finished</small></th>
+                        <th>Service warning - class interruption<br><small style="font-weight:400;">Total</small></th>
+                        <th>Service warning - class interruption<br><small style="font-weight:400;">Finished</small></th>
+                        <th>IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                        <th>IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="left">ME-JOLP02小组</td>
+                        <td>300</td>
+                        <td><span class="color-pill scale-low">91.3%</span></td>
+                        <td>1416</td>
+                        <td><span class="color-pill scale-very-low">90.4%</span></td>
+                        <td>1931</td>
+                        <td><span class="color-pill scale-very-low">96.8%</span></td>
+                        <td>472</td>
+                        <td><span class="color-pill scale-high">87.9%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-JOLP03小组</td>
+                        <td>256</td>
+                        <td><span class="color-pill scale-very-low">91.0%</span></td>
+                        <td>1330</td>
+                        <td><span class="color-pill scale-high">96.3%</span></td>
+                        <td>1943</td>
+                        <td><span class="color-pill scale-high">99.8%</span></td>
+                        <td>528</td>
+                        <td><span class="color-pill scale-high">100.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-JOLP08小组</td>
+                        <td>517</td>
+                        <td><span class="color-pill scale-high">92.5%</span></td>
+                        <td>1129</td>
+                        <td><span class="color-pill scale-high">96.1%</span></td>
+                        <td>1844</td>
+                        <td><span class="color-pill scale-high">99.4%</span></td>
+                        <td>481</td>
+                        <td><span class="color-pill scale-high">98.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-JOLP06小组</td>
+                        <td>376</td>
+                        <td><span class="color-pill scale-low">91.5%</span></td>
+                        <td>1090</td>
+                        <td><span class="color-pill scale-medium-high">94.7%</span></td>
+                        <td>1505</td>
+                        <td><span class="color-pill scale-high">99.3%</span></td>
+                        <td>366</td>
+                        <td><span class="color-pill scale-high">98.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">MEAdult-JOLP01小组</td>
+                        <td>344</td>
+                        <td><span class="color-pill scale-medium-high">92.2%</span></td>
+                        <td>776</td>
+                        <td><span class="color-pill scale-medium-high">95.1%</span></td>
+                        <td>1363</td>
+                        <td><span class="color-pill scale-high">99.5%</span></td>
+                        <td>0</td>
+                        <td><span class="color-pill scale-very-low">0.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-JOLP04小组</td>
+                        <td>237</td>
+                        <td><span class="color-pill scale-medium-low">91.6%</span></td>
+                        <td>769</td>
+                        <td><span class="color-pill scale-low">92.3%</span></td>
+                        <td>1268</td>
+                        <td><span class="color-pill scale-medium-high">99.3%</span></td>
+                        <td>393</td>
+                        <td><span class="color-pill scale-high">98.7%</span></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="left"><strong>TOTAL</strong></td>
+                        <td><strong>2030</strong></td>
+                        <td><strong>91.7%</strong></td>
+                        <td><strong>6510</strong></td>
+                        <td><strong>94.2%</strong></td>
+                        <td><strong>9854</strong></td>
+                        <td><strong>99.0%</strong></td>
+                        <td><strong>2240</strong></td>
+                        <td><strong>80.5%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+
+            // Update active button if event exists (user click)
+            if (typeof event !== 'undefined' && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Programmatic call - find and activate the correct button
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    if (btn.textContent.toLowerCase().includes(tabId.replace('-', ' '))) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            // Recalculate heights for newly visible tab
+            setTimeout(function() {
+                document.querySelectorAll('#' + tabId + ' .team-detail-body:not(.collapsed)').forEach(body => {
+                    body.style.maxHeight = body.scrollHeight + 'px';
+                });
+            }, 10);
+        }
+
+        // Check URL hash on load to show specific tab (for screenshots)
+        window.addEventListener('DOMContentLoaded', function() {
+            if (window.location.hash) {
+                const tabId = window.location.hash.substring(1);
+                showTab(tabId);
+            }
+        });
+
+        function showSubTab(group, subTabId) {
+            const groupPrefix = group + '-';
+
+            // Hide all sub-tab contents for this group
+            document.querySelectorAll('[id^="' + groupPrefix + '"]').forEach(content => {
+                if (content.classList.contains('sub-tab-content')) {
+                    content.classList.remove('active');
+                }
+            });
+
+            // Remove active class from all sub-tab buttons in this group's parent container
+            if (typeof event !== 'undefined' && event.target) {
+                const nav = event.target.closest('.sub-tab-nav');
+                if (nav) {
+                    nav.querySelectorAll('.sub-tab-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    event.target.classList.add('active');
+                }
+            }
+
+            // Show the selected sub-tab
+            const targetId = groupPrefix + subTabId;
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.classList.add('active');
+            }
+        }
+
+        function toggleTeam(element) {
+            const header = element;
+            const body = element.nextElementSibling;
+
+            header.classList.toggle('collapsed');
+            body.classList.toggle('collapsed');
+
+            if (!body.classList.contains('collapsed')) {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            }
+        }
+
+        // Initialize team bodies
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial heights for visible tab
+            document.querySelectorAll('.tab-content.active .team-detail-body').forEach(body => {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            });
+        });
+    </script>
 </body>
 </html>

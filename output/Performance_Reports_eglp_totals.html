@@ -1,72 +1,694 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EGLP Teams Totals</title>
-  <style>
-    :root {
-      color-scheme: light;
-    }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", "Calibri", "Arial", sans-serif;
-      background: #f5f6f8;
-      color: #1b1b1b;
-    }
-    header {
-      background: #1f2937;
-      color: #fff;
-      padding: 16px 20px;
-    }
-    main {
-      padding: 16px 20px 32px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    td, th {
-      border: 1px solid #e5e7eb;
-      padding: 6px 8px;
-      font-size: 12px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    tr:nth-child(even) td {
-      background: #fafafa;
-    }
-    a {
-      color: #0b5fff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .links {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOP Performance Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #1a365d;
+            --primary-foreground: #ffffff;
+            --background: #ffffff;
+            --foreground: #1a365d;
+            --muted: #f4f6f8;
+            --muted-foreground: #64748b;
+            --border: #e2e8f0;
+            --card: #ffffff;
+            --card-foreground: #1a365d;
+            --destructive: #dc2626;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --radius: 0.5rem;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--muted);
+            min-height: 100vh;
+            color: var(--foreground);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            margin-bottom: 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-foreground);
+        }
+
+        .header-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        .header-subtitle {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+        }
+
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--foreground);
+            border-bottom-color: var(--border);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Sub-tab Navigation */
+        .sub-tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--muted);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 16px;
+            margin: -24px -24px 24px -24px;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .sub-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sub-tab-btn:hover {
+            background: rgba(26, 54, 93, 0.1);
+            color: var(--foreground);
+        }
+
+        .sub-tab-btn.active {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .sub-tab-content {
+            display: none;
+        }
+
+        .sub-tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .table-container h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--muted);
+            padding: 16px 12px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--muted-foreground);
+            border-bottom: 1px solid var(--border);
+            white-space: normal;
+            word-wrap: break-word;
+            min-height: 50px;
+            vertical-align: middle;
+        }
+
+        th.left {
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--foreground);
+            text-align: center;
+        }
+
+        td.left {
+            text-align: left;
+        }
+
+        tr:hover {
+            background: var(--muted);
+        }
+
+        .total-row {
+            background: var(--muted) !important;
+            font-weight: 600;
+        }
+
+        /* Performance Badge Pills */
+        .color-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-weight: 500;
+            min-width: 60px;
+            font-size: 13px;
+        }
+
+        .scale-very-low { background: #F8696B; color: #000; }
+        .scale-low { background: #FCAA75; color: #000; }
+        .scale-medium-low { background: #FFEB84; color: #000; }
+        .scale-medium { background: #C6E5B5; color: #000; }
+        .scale-medium-high { background: #9FD899; color: #000; }
+        .scale-high { background: #63BE7B; color: #000; }
+
+        /* Team detail section */
+        .team-detail {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .team-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--muted);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .team-detail-header:hover {
+            background: #e9ecef;
+        }
+
+        .team-detail-header h3 {
+            color: var(--foreground);
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-detail-header .toggle-icon {
+            font-size: 12px;
+            color: var(--muted-foreground);
+            transition: transform 0.2s ease;
+        }
+
+        .team-detail-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .team-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .team-stat {
+            background: var(--primary);
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            text-align: center;
+        }
+
+        .team-stat-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.8);
+            letter-spacing: 0.5px;
+        }
+
+        .team-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-foreground);
+        }
+
+        .team-detail-body {
+            padding: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .team-detail-body.collapsed {
+            max-height: 0 !important;
+            padding: 0;
+        }
+
+        .team-detail-body table {
+            margin: 0;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            margin-left: 8px;
+        }
+
+        /* Timestamp */
+        .timestamp {
+            color: var(--muted-foreground);
+            font-size: 12px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--muted);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: var(--radius);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted-foreground);
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1 style="margin:0;font-size:18px;">EGLP Teams Totals</h1>
-  </header>
-  <main>
-    <table><tr><td>SOP Report - EGLP Teams Totals</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Group</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP07小组</td><td>219</td><td>0.9360730593607306</td><td>0</td><td>452</td><td>0.9933628318584071</td><td>0.00663716814159292</td><td>1066</td><td>0.950281425891182</td><td>0.009380863039399626</td><td>1358</td><td>0.9963181148748159</td><td>0</td></tr><tr><td>ME-EGLP10小组</td><td>196</td><td>0.9285714285714286</td><td>0</td><td>163</td><td>1</td><td>0</td><td>730</td><td>0.9328767123287671</td><td>0.01780821917808219</td><td>979</td><td>0.9908069458631257</td><td>0</td></tr><tr><td>ME-EGLP-GCC01小组</td><td>786</td><td>0.9236641221374046</td><td>0</td><td>711</td><td>0.980309423347398</td><td>0.004219409282700422</td><td>1867</td><td>0.9153722549544724</td><td>0.01553294054633101</td><td>1934</td><td>0.9234746639089969</td><td>0.00672182006204757</td></tr><tr><td>ME-EGLP09小组</td><td>261</td><td>0.9233716475095786</td><td>0.003831417624521073</td><td>718</td><td>1</td><td>0</td><td>1034</td><td>0.9690522243713733</td><td>0</td><td>1404</td><td>0.9907407407407407</td><td>0</td></tr><tr><td>ME-EGLP03小组</td><td>684</td><td>0.9195906432748538</td><td>0</td><td>576</td><td>0.9826388888888888</td><td>0.01215277777777778</td><td>1224</td><td>0.9297385620915033</td><td>0.02369281045751634</td><td>1862</td><td>0.9715359828141783</td><td>0.02201933404940924</td></tr><tr><td>ME-EGLP05小组</td><td>254</td><td>0.9094488188976378</td><td>0</td><td>255</td><td>1</td><td>0</td><td>802</td><td>0.9613466334164589</td><td>0</td><td>1149</td><td>0.9860748476936466</td><td>0</td></tr><tr><td>ME-EGLP04小组</td><td>448</td><td>0.9084821428571429</td><td>0.004464285714285714</td><td>465</td><td>0.9849462365591398</td><td>0</td><td>1149</td><td>0.9347258485639687</td><td>0.003481288076588338</td><td>1732</td><td>0.9613163972286374</td><td>0.004618937644341801</td></tr><tr><td>ME-EGLP06小组</td><td>371</td><td>0.9029649595687331</td><td>0</td><td>483</td><td>0.9813664596273292</td><td>0.01863354037267081</td><td>999</td><td>0.9059059059059059</td><td>0.007007007007007007</td><td>1516</td><td>0.9175461741424802</td><td>0.03364116094986808</td></tr><tr><td>ME-EGLP02小组</td><td>549</td><td>0.8943533697632058</td><td>0.00546448087431694</td><td>397</td><td>0.9974811083123426</td><td>0.002518891687657431</td><td>1095</td><td>0.91324200913242</td><td>0.01552511415525114</td><td>1696</td><td>0.9257075471698113</td><td>0.04893867924528302</td></tr><tr><td>MEAdult-EGLP01小组</td><td>420</td><td>0.8928571428571429</td><td>0.01428571428571429</td><td>0</td><td>0</td><td>0</td><td>936</td><td>0.8611111111111112</td><td>0.04594017094017094</td><td>1831</td><td>0.9186237028945932</td><td>0</td></tr><tr><td>ME-EGLP08小组</td><td>355</td><td>0.8901408450704226</td><td>0</td><td>488</td><td>1</td><td>0</td><td>1117</td><td>0.9623992837958818</td><td>0.004476275738585497</td><td>1565</td><td>0.994888178913738</td><td>0</td></tr><tr><td>ME-EGLP01小组</td><td>432</td><td>0.875</td><td>0</td><td>859</td><td>0.989522700814901</td><td>0.003492433061699651</td><td>2086</td><td>0.9352828379674017</td><td>0</td><td>2866</td><td>0.9902302861130495</td><td>0</td></tr><tr><td>TOTAL</td><td>4975</td><td>0.9087098483223568</td><td>0.002337158208236501</td><td>5567</td><td>0.9091356374507006</td><td>0.003971185027008251</td><td>14105</td><td>0.9309445674608705</td><td>0.01190372409491101</td><td>19892</td><td>0.9639386318631512</td><td>0.009661660995912475</td></tr></table>
-  </main>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="header-title">SOP Performance Report</div>
+                    <div class="header-subtitle">Generated: 2026-01-28 12:15:15</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+        <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+        <button class="tab-btn" onclick="showTab('eglp-teams')">EGLP Teams</button>
+        <button class="tab-btn" onclick="showTab('eglp-ranking')">EGLP Ranking</button>
+        <button class="tab-btn" onclick="showTab('eglp-totals')">EGLP Totals</button>
+        <button class="tab-btn" onclick="showTab('jolp-teams')">JOLP Teams</button>
+        <button class="tab-btn" onclick="showTab('jolp-ranking')">JOLP Ranking</button>
+        <button class="tab-btn" onclick="showTab('jolp-totals')">JOLP Totals</button>
+    </nav>
+
+    <div class="container">
+
+    <style>
+        .tab-nav { display: none; }
+        .tab-content { display: block; }
+        .tab-content.active { display: block; }
+        .header { position: static; }
+    </style>
+    
+        <div id="eglp-totals" class="tab-content active">
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Teams Summary</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="left" style="width: 200px;">Team</th>
+                        <th>First call<br><small style="font-weight:400;">Total</small></th>
+                        <th>First call<br><small style="font-weight:400;">Finished</small></th>
+                        <th>Service warning - absence<br><small style="font-weight:400;">Total</small></th>
+                        <th>Service warning - absence<br><small style="font-weight:400;">Finished</small></th>
+                        <th>Service warning - class interruption<br><small style="font-weight:400;">Total</small></th>
+                        <th>Service warning - class interruption<br><small style="font-weight:400;">Finished</small></th>
+                        <th>IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                        <th>IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="left">ME-EGLP01小组</td>
+                        <td>432</td>
+                        <td><span class="color-pill scale-very-low">87.5%</span></td>
+                        <td>2086</td>
+                        <td><span class="color-pill scale-medium-high">93.5%</span></td>
+                        <td>2866</td>
+                        <td><span class="color-pill scale-high">99.0%</span></td>
+                        <td>859</td>
+                        <td><span class="color-pill scale-high">99.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP-GCC01小组</td>
+                        <td>786</td>
+                        <td><span class="color-pill scale-medium-high">92.4%</span></td>
+                        <td>1867</td>
+                        <td><span class="color-pill scale-medium">91.5%</span></td>
+                        <td>1934</td>
+                        <td><span class="color-pill scale-very-low">92.3%</span></td>
+                        <td>711</td>
+                        <td><span class="color-pill scale-high">98.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP03小组</td>
+                        <td>684</td>
+                        <td><span class="color-pill scale-medium-high">92.0%</span></td>
+                        <td>1224</td>
+                        <td><span class="color-pill scale-medium">93.0%</span></td>
+                        <td>1862</td>
+                        <td><span class="color-pill scale-medium-high">97.2%</span></td>
+                        <td>576</td>
+                        <td><span class="color-pill scale-high">98.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP04小组</td>
+                        <td>448</td>
+                        <td><span class="color-pill scale-medium">90.8%</span></td>
+                        <td>1149</td>
+                        <td><span class="color-pill scale-medium-high">93.5%</span></td>
+                        <td>1732</td>
+                        <td><span class="color-pill scale-medium">96.1%</span></td>
+                        <td>465</td>
+                        <td><span class="color-pill scale-high">98.5%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP08小组</td>
+                        <td>355</td>
+                        <td><span class="color-pill scale-low">89.0%</span></td>
+                        <td>1117</td>
+                        <td><span class="color-pill scale-high">96.2%</span></td>
+                        <td>1565</td>
+                        <td><span class="color-pill scale-high">99.5%</span></td>
+                        <td>488</td>
+                        <td><span class="color-pill scale-high">100.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP02小组</td>
+                        <td>549</td>
+                        <td><span class="color-pill scale-low">89.4%</span></td>
+                        <td>1095</td>
+                        <td><span class="color-pill scale-medium-low">91.3%</span></td>
+                        <td>1696</td>
+                        <td><span class="color-pill scale-very-low">92.6%</span></td>
+                        <td>397</td>
+                        <td><span class="color-pill scale-high">99.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP07小组</td>
+                        <td>219</td>
+                        <td><span class="color-pill scale-high">93.6%</span></td>
+                        <td>1066</td>
+                        <td><span class="color-pill scale-medium-high">95.0%</span></td>
+                        <td>1358</td>
+                        <td><span class="color-pill scale-high">99.6%</span></td>
+                        <td>452</td>
+                        <td><span class="color-pill scale-high">99.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP09小组</td>
+                        <td>261</td>
+                        <td><span class="color-pill scale-medium-high">92.3%</span></td>
+                        <td>1034</td>
+                        <td><span class="color-pill scale-high">96.9%</span></td>
+                        <td>1404</td>
+                        <td><span class="color-pill scale-high">99.1%</span></td>
+                        <td>718</td>
+                        <td><span class="color-pill scale-high">100.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP06小组</td>
+                        <td>371</td>
+                        <td><span class="color-pill scale-medium-low">90.3%</span></td>
+                        <td>999</td>
+                        <td><span class="color-pill scale-medium-low">90.6%</span></td>
+                        <td>1516</td>
+                        <td><span class="color-pill scale-very-low">91.8%</span></td>
+                        <td>483</td>
+                        <td><span class="color-pill scale-high">98.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">MEAdult-EGLP01小组</td>
+                        <td>420</td>
+                        <td><span class="color-pill scale-low">89.3%</span></td>
+                        <td>936</td>
+                        <td><span class="color-pill scale-very-low">86.1%</span></td>
+                        <td>1831</td>
+                        <td><span class="color-pill scale-very-low">91.9%</span></td>
+                        <td>0</td>
+                        <td><span class="color-pill scale-very-low">0.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP05小组</td>
+                        <td>254</td>
+                        <td><span class="color-pill scale-medium">90.9%</span></td>
+                        <td>802</td>
+                        <td><span class="color-pill scale-high">96.1%</span></td>
+                        <td>1149</td>
+                        <td><span class="color-pill scale-high">98.6%</span></td>
+                        <td>255</td>
+                        <td><span class="color-pill scale-high">100.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP10小组</td>
+                        <td>196</td>
+                        <td><span class="color-pill scale-high">92.9%</span></td>
+                        <td>730</td>
+                        <td><span class="color-pill scale-medium">93.3%</span></td>
+                        <td>979</td>
+                        <td><span class="color-pill scale-high">99.1%</span></td>
+                        <td>163</td>
+                        <td><span class="color-pill scale-high">100.0%</span></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="left"><strong>TOTAL</strong></td>
+                        <td><strong>4975</strong></td>
+                        <td><strong>90.9%</strong></td>
+                        <td><strong>14105</strong></td>
+                        <td><strong>93.1%</strong></td>
+                        <td><strong>19892</strong></td>
+                        <td><strong>96.4%</strong></td>
+                        <td><strong>5567</strong></td>
+                        <td><strong>90.9%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+
+            // Update active button if event exists (user click)
+            if (typeof event !== 'undefined' && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Programmatic call - find and activate the correct button
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    if (btn.textContent.toLowerCase().includes(tabId.replace('-', ' '))) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            // Recalculate heights for newly visible tab
+            setTimeout(function() {
+                document.querySelectorAll('#' + tabId + ' .team-detail-body:not(.collapsed)').forEach(body => {
+                    body.style.maxHeight = body.scrollHeight + 'px';
+                });
+            }, 10);
+        }
+
+        // Check URL hash on load to show specific tab (for screenshots)
+        window.addEventListener('DOMContentLoaded', function() {
+            if (window.location.hash) {
+                const tabId = window.location.hash.substring(1);
+                showTab(tabId);
+            }
+        });
+
+        function showSubTab(group, subTabId) {
+            const groupPrefix = group + '-';
+
+            // Hide all sub-tab contents for this group
+            document.querySelectorAll('[id^="' + groupPrefix + '"]').forEach(content => {
+                if (content.classList.contains('sub-tab-content')) {
+                    content.classList.remove('active');
+                }
+            });
+
+            // Remove active class from all sub-tab buttons in this group's parent container
+            if (typeof event !== 'undefined' && event.target) {
+                const nav = event.target.closest('.sub-tab-nav');
+                if (nav) {
+                    nav.querySelectorAll('.sub-tab-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    event.target.classList.add('active');
+                }
+            }
+
+            // Show the selected sub-tab
+            const targetId = groupPrefix + subTabId;
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.classList.add('active');
+            }
+        }
+
+        function toggleTeam(element) {
+            const header = element;
+            const body = element.nextElementSibling;
+
+            header.classList.toggle('collapsed');
+            body.classList.toggle('collapsed');
+
+            if (!body.classList.contains('collapsed')) {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            }
+        }
+
+        // Initialize team bodies
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial heights for visible tab
+            document.querySelectorAll('.tab-content.active .team-detail-body').forEach(body => {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            });
+        });
+    </script>
 </body>
 </html>

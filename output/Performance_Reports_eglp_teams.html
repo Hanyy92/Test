@@ -1,72 +1,2881 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EGLP Teams</title>
-  <style>
-    :root {
-      color-scheme: light;
-    }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", "Calibri", "Arial", sans-serif;
-      background: #f5f6f8;
-      color: #1b1b1b;
-    }
-    header {
-      background: #1f2937;
-      color: #fff;
-      padding: 16px 20px;
-    }
-    main {
-      padding: 16px 20px 32px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    td, th {
-      border: 1px solid #e5e7eb;
-      padding: 6px 8px;
-      font-size: 12px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    tr:nth-child(even) td {
-      background: #fafafa;
-    }
-    a {
-      color: #0b5fff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .links {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOP Performance Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #1a365d;
+            --primary-foreground: #ffffff;
+            --background: #ffffff;
+            --foreground: #1a365d;
+            --muted: #f4f6f8;
+            --muted-foreground: #64748b;
+            --border: #e2e8f0;
+            --card: #ffffff;
+            --card-foreground: #1a365d;
+            --destructive: #dc2626;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --radius: 0.5rem;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--muted);
+            min-height: 100vh;
+            color: var(--foreground);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            margin-bottom: 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-foreground);
+        }
+
+        .header-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        .header-subtitle {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+        }
+
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--foreground);
+            border-bottom-color: var(--border);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Sub-tab Navigation */
+        .sub-tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--muted);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 16px;
+            margin: -24px -24px 24px -24px;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .sub-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sub-tab-btn:hover {
+            background: rgba(26, 54, 93, 0.1);
+            color: var(--foreground);
+        }
+
+        .sub-tab-btn.active {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .sub-tab-content {
+            display: none;
+        }
+
+        .sub-tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .table-container h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--muted);
+            padding: 16px 12px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--muted-foreground);
+            border-bottom: 1px solid var(--border);
+            white-space: normal;
+            word-wrap: break-word;
+            min-height: 50px;
+            vertical-align: middle;
+        }
+
+        th.left {
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--foreground);
+            text-align: center;
+        }
+
+        td.left {
+            text-align: left;
+        }
+
+        tr:hover {
+            background: var(--muted);
+        }
+
+        .total-row {
+            background: var(--muted) !important;
+            font-weight: 600;
+        }
+
+        /* Performance Badge Pills */
+        .color-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-weight: 500;
+            min-width: 60px;
+            font-size: 13px;
+        }
+
+        .scale-very-low { background: #F8696B; color: #000; }
+        .scale-low { background: #FCAA75; color: #000; }
+        .scale-medium-low { background: #FFEB84; color: #000; }
+        .scale-medium { background: #C6E5B5; color: #000; }
+        .scale-medium-high { background: #9FD899; color: #000; }
+        .scale-high { background: #63BE7B; color: #000; }
+
+        /* Team detail section */
+        .team-detail {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .team-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--muted);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .team-detail-header:hover {
+            background: #e9ecef;
+        }
+
+        .team-detail-header h3 {
+            color: var(--foreground);
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-detail-header .toggle-icon {
+            font-size: 12px;
+            color: var(--muted-foreground);
+            transition: transform 0.2s ease;
+        }
+
+        .team-detail-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .team-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .team-stat {
+            background: var(--primary);
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            text-align: center;
+        }
+
+        .team-stat-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.8);
+            letter-spacing: 0.5px;
+        }
+
+        .team-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-foreground);
+        }
+
+        .team-detail-body {
+            padding: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .team-detail-body.collapsed {
+            max-height: 0 !important;
+            padding: 0;
+        }
+
+        .team-detail-body table {
+            margin: 0;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            margin-left: 8px;
+        }
+
+        /* Timestamp */
+        .timestamp {
+            color: var(--muted-foreground);
+            font-size: 12px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--muted);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: var(--radius);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted-foreground);
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1 style="margin:0;font-size:18px;">EGLP Teams</h1>
-  </header>
-  <main>
-    <table><tr><td>SOP Report - EGLP Teams</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP-GCC01小组</td><td>EGLP-farghaly</td><td>30</td><td>1</td><td>0</td><td>45</td><td>1</td><td>0</td><td>115</td><td>0.9391304347826087</td><td>0</td><td>106</td><td>0.9716981132075472</td><td>0</td></tr><tr><td></td><td>EGLP-moustafaa</td><td>62</td><td>0.967741935483871</td><td>0</td><td>16</td><td>1</td><td>0</td><td>23</td><td>0.9565217391304348</td><td>0</td><td>22</td><td>0.9545454545454546</td><td>0</td></tr><tr><td></td><td>EGLP-ssabry</td><td>29</td><td>0.9655172413793104</td><td>0</td><td>31</td><td>1</td><td>0</td><td>147</td><td>0.9931972789115646</td><td>0</td><td>91</td><td>0.8791208791208791</td><td>0</td></tr><tr><td></td><td>EGLP-lubnamohamed</td><td>77</td><td>0.961038961038961</td><td>0</td><td>5</td><td>1</td><td>0</td><td>4</td><td>1</td><td>0</td><td>16</td><td>0.875</td><td>0</td></tr><tr><td></td><td>EGSS-hady</td><td>23</td><td>0.9565217391304348</td><td>0</td><td>46</td><td>1</td><td>0</td><td>122</td><td>0.7704918032786885</td><td>0</td><td>144</td><td>0.9930555555555556</td><td>0</td></tr><tr><td></td><td>EGLP-mohamedibrahim</td><td>22</td><td>0.9545454545454546</td><td>0</td><td>23</td><td>1</td><td>0</td><td>89</td><td>1</td><td>0</td><td>87</td><td>0.9885057471264368</td><td>0</td></tr><tr><td></td><td>EGLP-esraaahmed</td><td>72</td><td>0.9444444444444444</td><td>0</td><td>10</td><td>1</td><td>0</td><td>2</td><td>1</td><td>0</td><td>6</td><td>0.8333333333333334</td><td>0</td></tr><tr><td></td><td>EGSS-abdallah01</td><td>31</td><td>0.9354838709677419</td><td>0</td><td>43</td><td>0.9534883720930233</td><td>0.04651162790697674</td><td>107</td><td>0.8878504672897196</td><td>0</td><td>132</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-ahmednabil</td><td>31</td><td>0.9354838709677419</td><td>0</td><td>39</td><td>1</td><td>0</td><td>83</td><td>0.9397590361445783</td><td>0.01204819277108434</td><td>81</td><td>0.9753086419753086</td><td>0</td></tr><tr><td></td><td>EGLP-omnia01</td><td>31</td><td>0.9354838709677419</td><td>0</td><td>41</td><td>1</td><td>0</td><td>114</td><td>0.9473684210526315</td><td>0</td><td>130</td><td>0.9923076923076923</td><td>0</td></tr><tr><td></td><td>EGLP-eslammasoud</td><td>46</td><td>0.9347826086956522</td><td>0</td><td>24</td><td>1</td><td>0</td><td>16</td><td>0.875</td><td>0</td><td>39</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-fatimagouda</td><td>60</td><td>0.9333333333333333</td><td>0</td><td>13</td><td>1</td><td>0</td><td>28</td><td>0.8928571428571429</td><td>0</td><td>19</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-ahmedmoham</td><td>29</td><td>0.9310344827586207</td><td>0</td><td>50</td><td>1</td><td>0</td><td>77</td><td>0.961038961038961</td><td>0</td><td>93</td><td>0.989247311827957</td><td>0</td></tr><tr><td></td><td>EGLP-mmahmoud</td><td>28</td><td>0.9285714285714286</td><td>0</td><td>29</td><td>1</td><td>0</td><td>125</td><td>0.984</td><td>0</td><td>141</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-habibamahmoud</td><td>52</td><td>0.9038461538461539</td><td>0</td><td>20</td><td>1</td><td>0</td><td>24</td><td>1</td><td>0</td><td>23</td><td>0.9565217391304348</td><td>0</td></tr><tr><td></td><td>EGLP-fabdelaziz</td><td>30</td><td>0.9</td><td>0</td><td>44</td><td>1</td><td>0</td><td>135</td><td>0.9111111111111111</td><td>0</td><td>123</td><td>0.8861788617886179</td><td>0</td></tr><tr><td></td><td>EGLP-mennaalla</td><td>30</td><td>0.9</td><td>0</td><td>54</td><td>1</td><td>0</td><td>147</td><td>0.7074829931972789</td><td>0.1904761904761905</td><td>163</td><td>0.9447852760736196</td><td>0</td></tr><tr><td></td><td>EGLP-halla</td><td>26</td><td>0.8846153846153846</td><td>0</td><td>33</td><td>1</td><td>0</td><td>65</td><td>0.7846153846153846</td><td>0</td><td>86</td><td>0.3953488372093023</td><td>0</td></tr><tr><td></td><td>EGLP-imang</td><td>30</td><td>0.8333333333333334</td><td>0</td><td>58</td><td>1</td><td>0</td><td>123</td><td>0.975609756097561</td><td>0</td><td>142</td><td>0.9647887323943662</td><td>0</td></tr><tr><td></td><td>EGLP-OmarM</td><td>17</td><td>0.8235294117647058</td><td>0</td><td>34</td><td>1</td><td>0</td><td>141</td><td>0.950354609929078</td><td>0</td><td>140</td><td>0.9928571428571429</td><td>0</td></tr><tr><td></td><td>EGLP-gannam</td><td>25</td><td>0.76</td><td>0</td><td>41</td><td>0.7073170731707317</td><td>0.02439024390243903</td><td>144</td><td>0.9375</td><td>0</td><td>116</td><td>0.646551724137931</td><td>0.1120689655172414</td></tr><tr><td></td><td>51abdelrahman</td><td>5</td><td>0.4</td><td>0</td><td>12</td><td>1</td><td>0</td><td>36</td><td>1</td><td>0</td><td>34</td><td>0.9705882352941176</td><td>0</td></tr><tr><td></td><td>ME-EGLP-GCC01小组</td><td>786</td><td>0.9236641221374046</td><td>0</td><td>711</td><td>0.980309423347398</td><td>0.004219409282700422</td><td>1867</td><td>0.9153722549544724</td><td>0.01553294054633101</td><td>1934</td><td>0.9234746639089969</td><td>0.00672182006204757</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP01小组</td><td>EGLP-begada</td><td>18</td><td>1</td><td>0</td><td>30</td><td>1</td><td>0</td><td>124</td><td>0.967741935483871</td><td>0</td><td>166</td><td>1</td><td>0</td></tr><tr><td></td><td>EGSS-aaya</td><td>21</td><td>0.9523809523809523</td><td>0</td><td>61</td><td>1</td><td>0</td><td>86</td><td>0.9186046511627907</td><td>0</td><td>156</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-hagarh</td><td>18</td><td>0.9444444444444444</td><td>0</td><td>47</td><td>0.9361702127659575</td><td>0.06382978723404255</td><td>127</td><td>0.7401574803149606</td><td>0</td><td>138</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-rehababdelreheem</td><td>52</td><td>0.9423076923076923</td><td>0</td><td>4</td><td>1</td><td>0</td><td>4</td><td>0.75</td><td>0</td><td>14</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-youssefyasser</td><td>16</td><td>0.9375</td><td>0</td><td>44</td><td>1</td><td>0</td><td>108</td><td>0.9629629629629629</td><td>0</td><td>144</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-amalyossef</td><td>25</td><td>0.92</td><td>0</td><td>46</td><td>0.8913043478260869</td><td>0</td><td>132</td><td>0.9090909090909091</td><td>0</td><td>169</td><td>0.9644970414201184</td><td>0</td></tr><tr><td></td><td>EGSS-yara</td><td>24</td><td>0.9166666666666666</td><td>0</td><td>50</td><td>1</td><td>0</td><td>99</td><td>0.9595959595959596</td><td>0</td><td>153</td><td>0.9934640522875817</td><td>0</td></tr><tr><td></td><td>EGLP-enasa</td><td>20</td><td>0.9</td><td>0</td><td>34</td><td>1</td><td>0</td><td>101</td><td>0.9306930693069307</td><td>0</td><td>164</td><td>0.9878048780487805</td><td>0</td></tr><tr><td></td><td>EGSS-mai01</td><td>17</td><td>0.8823529411764706</td><td>0</td><td>63</td><td>1</td><td>0</td><td>120</td><td>0.975</td><td>0</td><td>138</td><td>0.9782608695652174</td><td>0</td></tr><tr><td></td><td>EGLP-nourhanahm</td><td>17</td><td>0.8823529411764706</td><td>0</td><td>53</td><td>1</td><td>0</td><td>120</td><td>0.9583333333333334</td><td>0</td><td>175</td><td>0.9771428571428571</td><td>0</td></tr><tr><td></td><td>EGLP-amira</td><td>22</td><td>0.8636363636363636</td><td>0</td><td>50</td><td>0.98</td><td>0</td><td>120</td><td>0.9416666666666667</td><td>0</td><td>186</td><td>1</td><td>0</td></tr><tr><td></td><td>EGSS-Lobna</td><td>14</td><td>0.8571428571428571</td><td>0</td><td>0</td><td>0</td><td>0</td><td>56</td><td>0.9821428571428571</td><td>0</td><td>71</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-habdelaziz</td><td>20</td><td>0.85</td><td>0</td><td>50</td><td>1</td><td>0</td><td>137</td><td>0.9708029197080292</td><td>0</td><td>141</td><td>0.9858156028368794</td><td>0</td></tr><tr><td></td><td>EGLP-hadeerha</td><td>20</td><td>0.85</td><td>0</td><td>49</td><td>1</td><td>0</td><td>97</td><td>0.9484536082474226</td><td>0</td><td>120</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-kkhalil</td><td>19</td><td>0.8421052631578947</td><td>0</td><td>55</td><td>1</td><td>0</td><td>116</td><td>0.9568965517241379</td><td>0</td><td>120</td><td>0.9833333333333333</td><td>0</td></tr><tr><td></td><td>EGLP-nawaraa</td><td>19</td><td>0.8421052631578947</td><td>0</td><td>37</td><td>1</td><td>0</td><td>113</td><td>0.9734513274336283</td><td>0</td><td>161</td><td>0.9937888198757764</td><td>0</td></tr><tr><td></td><td>EGLP-amrom</td><td>23</td><td>0.8260869565217391</td><td>0</td><td>48</td><td>1</td><td>0</td><td>85</td><td>0.9764705882352941</td><td>0</td><td>157</td><td>0.9936305732484076</td><td>0</td></tr><tr><td></td><td>EGSS-radwa</td><td>26</td><td>0.8076923076923077</td><td>0</td><td>46</td><td>1</td><td>0</td><td>114</td><td>0.8421052631578947</td><td>0</td><td>179</td><td>0.9664804469273743</td><td>0</td></tr><tr><td></td><td>EGLP-aliam</td><td>20</td><td>0.75</td><td>0</td><td>39</td><td>1</td><td>0</td><td>121</td><td>0.9586776859504132</td><td>0</td><td>156</td><td>1</td><td>0</td></tr><tr><td></td><td>EGSS-shams</td><td>19</td><td>0.7368421052631579</td><td>0</td><td>53</td><td>1</td><td>0</td><td>106</td><td>0.9528301886792453</td><td>0</td><td>158</td><td>1</td><td>0</td></tr><tr><td></td><td>51remonda</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td></td><td>ME-EGLP01小组</td><td>432</td><td>0.875</td><td>0</td><td>859</td><td>0.989522700814901</td><td>0.003492433061699651</td><td>2086</td><td>0.9352828379674017</td><td>0</td><td>2866</td><td>0.9902302861130495</td><td>0</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP02小组</td><td>EGLP-fathyabdelati</td><td>52</td><td>0.9423076923076923</td><td>0</td><td>30</td><td>1</td><td>0</td><td>70</td><td>0.9285714285714286</td><td>0</td><td>96</td><td>1</td><td>0</td></tr><tr><td></td><td>EGSS-wafaa</td><td>53</td><td>0.9245283018867925</td><td>0</td><td>38</td><td>1</td><td>0</td><td>101</td><td>0.9108910891089109</td><td>0</td><td>159</td><td>0.9559748427672956</td><td>0</td></tr><tr><td></td><td>EGLP-hossam01</td><td>51</td><td>0.9215686274509803</td><td>0</td><td>59</td><td>1</td><td>0</td><td>102</td><td>0.9705882352941176</td><td>0</td><td>153</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-mahmoudismail</td><td>48</td><td>0.9166666666666666</td><td>0</td><td>23</td><td>1</td><td>0</td><td>76</td><td>0.9473684210526315</td><td>0</td><td>155</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-osamasalah</td><td>58</td><td>0.9137931034482759</td><td>0</td><td>36</td><td>1</td><td>0</td><td>127</td><td>0.9212598425196851</td><td>0.05511811023622047</td><td>168</td><td>1</td><td>0</td></tr><tr><td></td><td>51abdelfattah01</td><td>57</td><td>0.9122807017543859</td><td>0</td><td>28</td><td>1</td><td>0</td><td>123</td><td>0.8455284552845529</td><td>0.06504065040650407</td><td>192</td><td>0.9166666666666666</td><td>0</td></tr><tr><td></td><td>EGLP-passantahmed</td><td>52</td><td>0.9038461538461539</td><td>0</td><td>37</td><td>1</td><td>0</td><td>104</td><td>0.9423076923076923</td><td>0</td><td>179</td><td>0.6815642458100558</td><td>0.3184357541899441</td></tr><tr><td></td><td>EGLP-imansayed</td><td>54</td><td>0.8888888888888888</td><td>0</td><td>34</td><td>1</td><td>0</td><td>107</td><td>0.9719626168224299</td><td>0</td><td>153</td><td>0.9607843137254902</td><td>0</td></tr><tr><td></td><td>EGLP-ahmedamrali</td><td>52</td><td>0.8653846153846154</td><td>0</td><td>49</td><td>1</td><td>0</td><td>114</td><td>0.9210526315789473</td><td>0</td><td>163</td><td>0.8404907975460123</td><td>0.1042944785276074</td></tr><tr><td></td><td>51ahmed03</td><td>48</td><td>0.8541666666666666</td><td>0</td><td>62</td><td>1</td><td>0</td><td>104</td><td>0.9711538461538461</td><td>0</td><td>168</td><td>0.9940476190476191</td><td>0</td></tr><tr><td></td><td>EGLP-hamedem</td><td>24</td><td>0.6666666666666666</td><td>0.125</td><td>1</td><td>0</td><td>1</td><td>67</td><td>0.6417910447761194</td><td>0.02985074626865672</td><td>110</td><td>0.8818181818181818</td><td>0.08181818181818182</td></tr><tr><td></td><td>ME-EGLP02小组</td><td>549</td><td>0.8943533697632058</td><td>0.00546448087431694</td><td>397</td><td>0.9974811083123426</td><td>0.002518891687657431</td><td>1095</td><td>0.91324200913242</td><td>0.01552511415525114</td><td>1696</td><td>0.9257075471698113</td><td>0.04893867924528302</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP03小组</td><td>EGLP-passantga</td><td>59</td><td>0.9661016949152542</td><td>0</td><td>50</td><td>1</td><td>0</td><td>121</td><td>0.9834710743801653</td><td>0</td><td>151</td><td>0.9801324503311258</td><td>0</td></tr><tr><td></td><td>EGLP-seifeldeen</td><td>43</td><td>0.9534883720930233</td><td>0</td><td>56</td><td>1</td><td>0</td><td>97</td><td>0.979381443298969</td><td>0</td><td>159</td><td>0.9937106918238994</td><td>0</td></tr><tr><td></td><td>EGLP-aminabdelsatar</td><td>57</td><td>0.9473684210526315</td><td>0</td><td>40</td><td>1</td><td>0</td><td>109</td><td>0.9541284403669725</td><td>0</td><td>167</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-mahmoudmo</td><td>36</td><td>0.9444444444444444</td><td>0</td><td>36</td><td>0.8888888888888888</td><td>0.1111111111111111</td><td>92</td><td>0.9891304347826086</td><td>0</td><td>150</td><td>0.8066666666666666</td><td>0.1866666666666667</td></tr><tr><td></td><td>EGLP-nadaelneklawy</td><td>94</td><td>0.9361702127659575</td><td>0</td><td>6</td><td>0.8333333333333334</td><td>0</td><td>4</td><td>1</td><td>0</td><td>41</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-ibrahimalbaghdadi</td><td>52</td><td>0.9230769230769231</td><td>0</td><td>51</td><td>1</td><td>0</td><td>106</td><td>0.9811320754716981</td><td>0</td><td>171</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-ayaam</td><td>59</td><td>0.9152542372881356</td><td>0</td><td>49</td><td>1</td><td>0</td><td>90</td><td>0.9666666666666667</td><td>0</td><td>159</td><td>0.9119496855345912</td><td>0.08176100628930817</td></tr><tr><td></td><td>EGLP-mahmoudsamy</td><td>44</td><td>0.9090909090909091</td><td>0</td><td>36</td><td>1</td><td>0</td><td>109</td><td>0.9541284403669725</td><td>0</td><td>139</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-abdelrahmanmansour</td><td>51</td><td>0.9019607843137255</td><td>0</td><td>47</td><td>1</td><td>0</td><td>99</td><td>0.9595959595959596</td><td>0.0101010101010101</td><td>143</td><td>1</td><td>0</td></tr><tr><td></td><td>51samy</td><td>49</td><td>0.8979591836734694</td><td>0</td><td>50</td><td>1</td><td>0</td><td>110</td><td>0.9727272727272728</td><td>0</td><td>150</td><td>0.9933333333333333</td><td>0</td></tr><tr><td></td><td>51mostafa</td><td>53</td><td>0.8867924528301887</td><td>0</td><td>49</td><td>0.9591836734693877</td><td>0</td><td>81</td><td>0.9135802469135802</td><td>0</td><td>134</td><td>0.9925373134328358</td><td>0</td></tr><tr><td></td><td>EGSS-ABDULRAHMAN</td><td>41</td><td>0.8780487804878049</td><td>0</td><td>44</td><td>0.9318181818181818</td><td>0.06818181818181818</td><td>106</td><td>0.6320754716981132</td><td>0.2641509433962264</td><td>164</td><td>0.975609756097561</td><td>0</td></tr><tr><td></td><td>EGLP-esraamahmoud</td><td>46</td><td>0.8695652173913043</td><td>0</td><td>62</td><td>1</td><td>0</td><td>100</td><td>0.87</td><td>0</td><td>134</td><td>1</td><td>0</td></tr><tr><td></td><td>ME-EGLP03小组</td><td>684</td><td>0.9195906432748538</td><td>0</td><td>576</td><td>0.9826388888888888</td><td>0.01215277777777778</td><td>1224</td><td>0.9297385620915033</td><td>0.02369281045751634</td><td>1862</td><td>0.9715359828141783</td><td>0.02201933404940924</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP04小组</td><td>EGLP-ahmedmoha</td><td>38</td><td>0.9736842105263158</td><td>0</td><td>41</td><td>1</td><td>0</td><td>101</td><td>0.9108910891089109</td><td>0</td><td>152</td><td>0.9868421052631579</td><td>0</td></tr><tr><td></td><td>EGLP-ahmedn</td><td>38</td><td>0.9736842105263158</td><td>0</td><td>35</td><td>1</td><td>0</td><td>88</td><td>0.9659090909090909</td><td>0</td><td>144</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-ibrahemharidy</td><td>33</td><td>0.9393939393939394</td><td>0</td><td>2</td><td>1</td><td>0</td><td>5</td><td>1</td><td>0</td><td>10</td><td>1</td><td>0</td></tr><tr><td></td><td>EGSS-hager</td><td>29</td><td>0.9310344827586207</td><td>0</td><td>45</td><td>1</td><td>0</td><td>93</td><td>1</td><td>0</td><td>161</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-saraht</td><td>36</td><td>0.9166666666666666</td><td>0</td><td>45</td><td>1</td><td>0</td><td>105</td><td>0.9714285714285714</td><td>0</td><td>160</td><td>1</td><td>0</td></tr><tr><td></td><td>51abdellatif01</td><td>35</td><td>0.9142857142857143</td><td>0.05714285714285714</td><td>0</td><td>0</td><td>0</td><td>44</td><td>0.75</td><td>0.02272727272727273</td><td>85</td><td>0.5529411764705883</td><td>0.09411764705882353</td></tr><tr><td></td><td>51ahmed</td><td>39</td><td>0.8974358974358975</td><td>0</td><td>22</td><td>1</td><td>0</td><td>119</td><td>0.9243697478991597</td><td>0</td><td>171</td><td>0.9473684210526315</td><td>0</td></tr><tr><td></td><td>EGLP-mohamed05</td><td>39</td><td>0.8974358974358975</td><td>0</td><td>63</td><td>1</td><td>0</td><td>104</td><td>0.9615384615384616</td><td>0</td><td>168</td><td>0.9821428571428571</td><td>0</td></tr><tr><td></td><td>51mohamed01</td><td>36</td><td>0.8888888888888888</td><td>0</td><td>42</td><td>0.9523809523809523</td><td>0</td><td>102</td><td>0.9509803921568627</td><td>0</td><td>162</td><td>0.9876543209876543</td><td>0</td></tr><tr><td></td><td>EGSS-K. Ashraf</td><td>32</td><td>0.875</td><td>0</td><td>47</td><td>0.8936170212765957</td><td>0</td><td>105</td><td>0.9142857142857143</td><td>0</td><td>131</td><td>0.9389312977099237</td><td>0</td></tr><tr><td></td><td>EGSS-hatem</td><td>32</td><td>0.875</td><td>0</td><td>47</td><td>1</td><td>0</td><td>113</td><td>0.9380530973451328</td><td>0</td><td>116</td><td>1</td><td>0</td></tr><tr><td></td><td>EGSS-sameh</td><td>29</td><td>0.8620689655172413</td><td>0</td><td>41</td><td>1</td><td>0</td><td>81</td><td>0.9506172839506173</td><td>0</td><td>147</td><td>0.9727891156462585</td><td>0</td></tr><tr><td></td><td>EGLP-ahmedt</td><td>32</td><td>0.84375</td><td>0</td><td>35</td><td>1</td><td>0</td><td>89</td><td>0.8764044943820225</td><td>0.03370786516853932</td><td>124</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-amala</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr><tr><td></td><td>ME-EGLP04小组</td><td>448</td><td>0.9084821428571429</td><td>0.004464285714285714</td><td>465</td><td>0.9849462365591398</td><td>0</td><td>1149</td><td>0.9347258485639687</td><td>0.003481288076588338</td><td>1732</td><td>0.9613163972286374</td><td>0.004618937644341801</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP05小组</td><td>EGLP-bassem</td><td>25</td><td>0.96</td><td>0</td><td>32</td><td>1</td><td>0</td><td>93</td><td>0.9247311827956989</td><td>0</td><td>190</td><td>0.9736842105263158</td><td>0</td></tr><tr><td></td><td>EGLP-shrouqhaddad</td><td>30</td><td>0.9333333333333333</td><td>0</td><td>25</td><td>1</td><td>0</td><td>67</td><td>0.9402985074626866</td><td>0</td><td>105</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-shahdmahmoud</td><td>25</td><td>0.92</td><td>0</td><td>35</td><td>1</td><td>0</td><td>109</td><td>0.9357798165137615</td><td>0</td><td>171</td><td>0.9590643274853801</td><td>0</td></tr><tr><td></td><td>EGLP-noha</td><td>24</td><td>0.9166666666666666</td><td>0</td><td>44</td><td>1</td><td>0</td><td>100</td><td>0.99</td><td>0</td><td>142</td><td>0.9859154929577465</td><td>0</td></tr><tr><td></td><td>EGLP-gehanibrahim</td><td>33</td><td>0.9090909090909091</td><td>0</td><td>8</td><td>1</td><td>0</td><td>80</td><td>0.975</td><td>0</td><td>96</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-mohamed06</td><td>21</td><td>0.9047619047619048</td><td>0</td><td>43</td><td>1</td><td>0</td><td>132</td><td>0.9696969696969697</td><td>0</td><td>127</td><td>0.9921259842519685</td><td>0</td></tr><tr><td></td><td>EGLP-abdelrhmanbaher</td><td>30</td><td>0.9</td><td>0</td><td>37</td><td>1</td><td>0</td><td>105</td><td>0.9809523809523809</td><td>0</td><td>144</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-basmamohamed</td><td>39</td><td>0.8974358974358975</td><td>0</td><td>1</td><td>1</td><td>0</td><td>5</td><td>1</td><td>0</td><td>15</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-yasmin01</td><td>27</td><td>0.8518518518518519</td><td>0</td><td>30</td><td>1</td><td>0</td><td>111</td><td>0.963963963963964</td><td>0</td><td>159</td><td>0.9937106918238994</td><td>0</td></tr><tr><td></td><td>ME-EGLP05小组</td><td>254</td><td>0.9094488188976378</td><td>0</td><td>255</td><td>1</td><td>0</td><td>802</td><td>0.9613466334164589</td><td>0</td><td>1149</td><td>0.9860748476936466</td><td>0</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP06小组</td><td>EGLP-esraaba</td><td>32</td><td>0.96875</td><td>0</td><td>47</td><td>1</td><td>0</td><td>72</td><td>0.9722222222222222</td><td>0</td><td>143</td><td>0.986013986013986</td><td>0</td></tr><tr><td></td><td>EGLP-amrhassan</td><td>90</td><td>0.9555555555555556</td><td>0</td><td>5</td><td>1</td><td>0</td><td>6</td><td>0.6666666666666666</td><td>0</td><td>32</td><td>1</td><td>0</td></tr><tr><td></td><td>EGSS-rana01</td><td>19</td><td>0.9473684210526315</td><td>0</td><td>54</td><td>1</td><td>0</td><td>106</td><td>0.9056603773584906</td><td>0.009433962264150943</td><td>139</td><td>0.9640287769784173</td><td>0.02877697841726619</td></tr><tr><td></td><td>EGLP-abdelaziznaser</td><td>32</td><td>0.9375</td><td>0</td><td>59</td><td>1</td><td>0</td><td>121</td><td>0.9504132231404959</td><td>0</td><td>162</td><td>1</td><td>0</td></tr><tr><td></td><td>51khaled03</td><td>38</td><td>0.9210526315789473</td><td>0</td><td>68</td><td>1</td><td>0</td><td>106</td><td>0.9622641509433962</td><td>0</td><td>208</td><td>0.9086538461538461</td><td>0.08173076923076923</td></tr><tr><td></td><td>EGLP-habdelal</td><td>42</td><td>0.9047619047619048</td><td>0</td><td>61</td><td>1</td><td>0</td><td>107</td><td>0.9719626168224299</td><td>0</td><td>173</td><td>0.7456647398843931</td><td>0</td></tr><tr><td></td><td>EGSS-sarraa</td><td>26</td><td>0.8846153846153846</td><td>0</td><td>53</td><td>1</td><td>0</td><td>113</td><td>0.9557522123893806</td><td>0</td><td>182</td><td>1</td><td>0</td></tr><tr><td></td><td>EGSS-yousef</td><td>22</td><td>0.8636363636363636</td><td>0</td><td>45</td><td>0.9555555555555556</td><td>0.04444444444444445</td><td>135</td><td>0.8</td><td>0</td><td>179</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-nermeen</td><td>35</td><td>0.8571428571428571</td><td>0</td><td>58</td><td>0.8793103448275862</td><td>0.1206896551724138</td><td>99</td><td>0.8383838383838383</td><td>0.0101010101010101</td><td>133</td><td>0.7819548872180451</td><td>0.03007518796992481</td></tr><tr><td></td><td>EGLP-habibamourad</td><td>30</td><td>0.8333333333333334</td><td>0</td><td>33</td><td>1</td><td>0</td><td>70</td><td>0.9285714285714286</td><td>0.02857142857142857</td><td>96</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-sherifa</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>64</td><td>0.78125</td><td>0.046875</td><td>69</td><td>0.6231884057971014</td><td>0.3768115942028986</td></tr><tr><td></td><td>ME-EGLP06小组</td><td>371</td><td>0.9029649595687331</td><td>0</td><td>483</td><td>0.9813664596273292</td><td>0.01863354037267081</td><td>999</td><td>0.9059059059059059</td><td>0.007007007007007007</td><td>1516</td><td>0.9175461741424802</td><td>0.03364116094986808</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP07小组</td><td>EGLP-ahmedad</td><td>9</td><td>1</td><td>0</td><td>19</td><td>0.8421052631578947</td><td>0.1578947368421053</td><td>37</td><td>0.7567567567567568</td><td>0.08108108108108109</td><td>59</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-dohakhater</td><td>23</td><td>1</td><td>0</td><td>30</td><td>1</td><td>0</td><td>66</td><td>0.9848484848484849</td><td>0</td><td>83</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-manarsamy</td><td>18</td><td>1</td><td>0</td><td>48</td><td>1</td><td>0</td><td>146</td><td>0.9794520547945206</td><td>0</td><td>145</td><td>0.993103448275862</td><td>0</td></tr><tr><td></td><td>EGSS-mokhtar</td><td>17</td><td>1</td><td>0</td><td>42</td><td>1</td><td>0</td><td>116</td><td>0.9568965517241379</td><td>0</td><td>176</td><td>0.9886363636363636</td><td>0</td></tr><tr><td></td><td>EGLP-hussienabdelhamid</td><td>49</td><td>0.9795918367346939</td><td>0</td><td>2</td><td>1</td><td>0</td><td>9</td><td>1</td><td>0</td><td>27</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-ahmedmohs</td><td>20</td><td>0.95</td><td>0</td><td>35</td><td>1</td><td>0</td><td>126</td><td>0.9841269841269841</td><td>0</td><td>148</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-ahmedal</td><td>18</td><td>0.9444444444444444</td><td>0</td><td>59</td><td>1</td><td>0</td><td>103</td><td>0.9805825242718447</td><td>0</td><td>150</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-mohamedahmed</td><td>20</td><td>0.9</td><td>0</td><td>49</td><td>1</td><td>0</td><td>128</td><td>0.9296875</td><td>0</td><td>124</td><td>0.9919354838709677</td><td>0</td></tr><tr><td></td><td>EGSS-yasmin</td><td>9</td><td>0.8888888888888888</td><td>0</td><td>58</td><td>1</td><td>0</td><td>110</td><td>0.8636363636363636</td><td>0.06363636363636363</td><td>160</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-mohamedabdelazize</td><td>17</td><td>0.8235294117647058</td><td>0</td><td>53</td><td>1</td><td>0</td><td>103</td><td>0.970873786407767</td><td>0</td><td>148</td><td>0.9932432432432432</td><td>0</td></tr><tr><td></td><td>EGLP-shady</td><td>17</td><td>0.8235294117647058</td><td>0</td><td>57</td><td>1</td><td>0</td><td>122</td><td>0.9672131147540983</td><td>0</td><td>138</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-marwan01</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td></td><td>ME-EGLP07小组</td><td>219</td><td>0.9360730593607306</td><td>0</td><td>452</td><td>0.9933628318584071</td><td>0.00663716814159292</td><td>1066</td><td>0.950281425891182</td><td>0.009380863039399626</td><td>1358</td><td>0.9963181148748159</td><td>0</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP08小组</td><td>EGLP-mahmoudmohieldin</td><td>15</td><td>1</td><td>0</td><td>85</td><td>1</td><td>0</td><td>94</td><td>0.9574468085106383</td><td>0</td><td>147</td><td>0.9795918367346939</td><td>0</td></tr><tr><td></td><td>EGLP-walaamo</td><td>8</td><td>1</td><td>0</td><td>53</td><td>1</td><td>0</td><td>65</td><td>0.7538461538461538</td><td>0.07692307692307693</td><td>66</td><td>0.9848484848484849</td><td>0</td></tr><tr><td></td><td>EGSS-adham</td><td>24</td><td>0.9583333333333334</td><td>0</td><td>44</td><td>1</td><td>0</td><td>112</td><td>1</td><td>0</td><td>148</td><td>0.9932432432432432</td><td>0</td></tr><tr><td></td><td>EGLP-mabdelallah</td><td>31</td><td>0.9354838709677419</td><td>0</td><td>48</td><td>1</td><td>0</td><td>127</td><td>0.968503937007874</td><td>0</td><td>150</td><td>1</td><td>0</td></tr><tr><td></td><td>EGSS-nada01</td><td>20</td><td>0.9</td><td>0</td><td>44</td><td>1</td><td>0</td><td>113</td><td>0.9823008849557522</td><td>0</td><td>167</td><td>0.9940119760479041</td><td>0</td></tr><tr><td></td><td>EGLP-emanabdellatif</td><td>97</td><td>0.8969072164948454</td><td>0</td><td>5</td><td>1</td><td>0</td><td>5</td><td>0.6</td><td>0</td><td>38</td><td>0.9736842105263158</td><td>0</td></tr><tr><td></td><td>EGLP-ahmedelshereif</td><td>38</td><td>0.8947368421052632</td><td>0</td><td>12</td><td>1</td><td>0</td><td>71</td><td>0.9295774647887324</td><td>0</td><td>95</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-ahmedmuhammed</td><td>24</td><td>0.875</td><td>0</td><td>45</td><td>1</td><td>0</td><td>110</td><td>0.9727272727272728</td><td>0</td><td>167</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-nouransameh</td><td>24</td><td>0.875</td><td>0</td><td>38</td><td>1</td><td>0</td><td>98</td><td>0.9795918367346939</td><td>0</td><td>149</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-ahmedot</td><td>27</td><td>0.8518518518518519</td><td>0</td><td>19</td><td>1</td><td>0</td><td>114</td><td>0.9824561403508771</td><td>0</td><td>154</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-ahmedsalah</td><td>19</td><td>0.8421052631578947</td><td>0</td><td>43</td><td>1</td><td>0</td><td>93</td><td>1</td><td>0</td><td>135</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-mahmoudragab</td><td>28</td><td>0.75</td><td>0</td><td>52</td><td>1</td><td>0</td><td>115</td><td>0.9826086956521739</td><td>0</td><td>149</td><td>0.9932885906040269</td><td>0</td></tr><tr><td></td><td>ME-EGLP08小组</td><td>355</td><td>0.8901408450704226</td><td>0</td><td>488</td><td>1</td><td>0</td><td>1117</td><td>0.9623992837958818</td><td>0.004476275738585497</td><td>1565</td><td>0.994888178913738</td><td>0</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP09小组</td><td>EGLP-islammohamed</td><td>8</td><td>1</td><td>0</td><td>27</td><td>1</td><td>0</td><td>48</td><td>0.9166666666666666</td><td>0</td><td>77</td><td>0.974025974025974</td><td>0</td></tr><tr><td></td><td>EGLP-yossefs</td><td>21</td><td>0.9523809523809523</td><td>0</td><td>84</td><td>1</td><td>0</td><td>99</td><td>0.98989898989899</td><td>0</td><td>145</td><td>0.9862068965517241</td><td>0</td></tr><tr><td></td><td>51elsayed</td><td>19</td><td>0.9473684210526315</td><td>0</td><td>119</td><td>1</td><td>0</td><td>102</td><td>0.9705882352941176</td><td>0</td><td>110</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-maielsayed</td><td>17</td><td>0.9411764705882353</td><td>0</td><td>72</td><td>1</td><td>0</td><td>108</td><td>0.9907407407407407</td><td>0</td><td>143</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-nourhanah</td><td>17</td><td>0.9411764705882353</td><td>0</td><td>50</td><td>1</td><td>0</td><td>110</td><td>0.9454545454545454</td><td>0</td><td>158</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-fatimamohammed</td><td>29</td><td>0.9310344827586207</td><td>0.03448275862068965</td><td>27</td><td>1</td><td>0</td><td>53</td><td>1</td><td>0</td><td>80</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-kerolosrezk</td><td>56</td><td>0.9285714285714286</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>1</td><td>0</td><td>16</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-dianam</td><td>13</td><td>0.9230769230769231</td><td>0</td><td>53</td><td>1</td><td>0</td><td>105</td><td>0.9714285714285714</td><td>0</td><td>149</td><td>0.9664429530201343</td><td>0</td></tr><tr><td></td><td>EGLP-noraabdelkhalek</td><td>22</td><td>0.9090909090909091</td><td>0</td><td>79</td><td>1</td><td>0</td><td>111</td><td>0.963963963963964</td><td>0</td><td>134</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-hananhamdy</td><td>21</td><td>0.9047619047619048</td><td>0</td><td>57</td><td>1</td><td>0</td><td>83</td><td>0.9518072289156626</td><td>0</td><td>126</td><td>0.9761904761904762</td><td>0</td></tr><tr><td></td><td>EGSS-Shimaa</td><td>20</td><td>0.9</td><td>0</td><td>59</td><td>1</td><td>0</td><td>98</td><td>0.9795918367346939</td><td>0</td><td>129</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-zeyad</td><td>17</td><td>0.8823529411764706</td><td>0</td><td>91</td><td>1</td><td>0</td><td>115</td><td>0.9652173913043478</td><td>0</td><td>137</td><td>0.9927007299270073</td><td>0</td></tr><tr><td></td><td>EGSS-ayam01</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td></td><td>ME-EGLP09小组</td><td>261</td><td>0.9233716475095786</td><td>0.003831417624521073</td><td>718</td><td>1</td><td>0</td><td>1034</td><td>0.9690522243713733</td><td>0</td><td>1404</td><td>0.9907407407407407</td><td>0</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-EGLP10小组</td><td>EGLP-maisarahfarrag</td><td>89</td><td>0.9887640449438202</td><td>0</td><td>5</td><td>1</td><td>0</td><td>6</td><td>0.8333333333333334</td><td>0</td><td>32</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-ahmedyo</td><td>22</td><td>0.9545454545454546</td><td>0</td><td>43</td><td>1</td><td>0</td><td>129</td><td>0.937984496124031</td><td>0</td><td>165</td><td>0.9939393939393939</td><td>0</td></tr><tr><td></td><td>EGLP-hendmoh</td><td>15</td><td>0.9333333333333333</td><td>0</td><td>0</td><td>0</td><td>0</td><td>103</td><td>0.970873786407767</td><td>0</td><td>137</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-assemm</td><td>11</td><td>0.9090909090909091</td><td>0</td><td>32</td><td>1</td><td>0</td><td>92</td><td>0.8804347826086957</td><td>0.08695652173913043</td><td>121</td><td>0.9917355371900827</td><td>0</td></tr><tr><td></td><td>EGLP-hassanh</td><td>20</td><td>0.85</td><td>0</td><td>37</td><td>1</td><td>0</td><td>114</td><td>0.9210526315789473</td><td>0</td><td>134</td><td>0.9701492537313433</td><td>0</td></tr><tr><td></td><td>EGLP-moimenahmed</td><td>13</td><td>0.8461538461538461</td><td>0</td><td>0</td><td>0</td><td>0</td><td>122</td><td>0.9344262295081968</td><td>0.04098360655737705</td><td>145</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-sandra</td><td>18</td><td>0.8333333333333334</td><td>0</td><td>20</td><td>1</td><td>0</td><td>91</td><td>0.9340659340659341</td><td>0</td><td>141</td><td>0.9929078014184397</td><td>0</td></tr><tr><td></td><td>EGLP-abdullahessam</td><td>8</td><td>0.75</td><td>0</td><td>26</td><td>1</td><td>0</td><td>73</td><td>0.958904109589041</td><td>0</td><td>103</td><td>0.9902912621359223</td><td>0</td></tr><tr><td></td><td>EGLP-ahmwsgaber</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr><tr><td></td><td>ME-EGLP10小组</td><td>196</td><td>0.9285714285714286</td><td>0</td><td>163</td><td>1</td><td>0</td><td>730</td><td>0.9328767123287671</td><td>0.01780821917808219</td><td>979</td><td>0.9908069458631257</td><td>0</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>MEAdult-EGLP01小组</td><td>EGLP-suhailaabuelmagd</td><td>49</td><td>0.9387755102040817</td><td>0</td><td>0</td><td>0</td><td>0</td><td>75</td><td>0.9333333333333333</td><td>0</td><td>153</td><td>0.9934640522875817</td><td>0</td></tr><tr><td></td><td>EGLP-eslammohamed</td><td>48</td><td>0.9375</td><td>0.02083333333333333</td><td>0</td><td>0</td><td>0</td><td>79</td><td>0.9493670886075949</td><td>0</td><td>144</td><td>0.9861111111111112</td><td>0</td></tr><tr><td></td><td>EGLP-saharsaleh</td><td>59</td><td>0.9322033898305084</td><td>0.01694915254237288</td><td>0</td><td>0</td><td>0</td><td>82</td><td>0.9878048780487805</td><td>0</td><td>154</td><td>0.987012987012987</td><td>0</td></tr><tr><td></td><td>EGLP-amiraabd</td><td>49</td><td>0.9183673469387755</td><td>0.02040816326530612</td><td>0</td><td>0</td><td>0</td><td>104</td><td>0.75</td><td>0.1538461538461539</td><td>238</td><td>0.9915966386554622</td><td>0</td></tr><tr><td></td><td>EGLP-azzasoliman</td><td>49</td><td>0.9183673469387755</td><td>0.02040816326530612</td><td>0</td><td>0</td><td>0</td><td>83</td><td>0.9759036144578314</td><td>0</td><td>134</td><td>1</td><td>0</td></tr><tr><td></td><td>EGLP-yehiaad</td><td>31</td><td>0.9032258064516129</td><td>0</td><td>0</td><td>0</td><td>0</td><td>124</td><td>0.8306451612903226</td><td>0.1129032258064516</td><td>243</td><td>0.9382716049382716</td><td>0</td></tr><tr><td></td><td>51elbeleidy</td><td>27</td><td>0.8888888888888888</td><td>0.03703703703703703</td><td>0</td><td>0</td><td>0</td><td>113</td><td>0.9203539823008849</td><td>0.07079646017699115</td><td>214</td><td>0.9953271028037384</td><td>0</td></tr><tr><td></td><td>EGLP-ibrahimmag</td><td>42</td><td>0.8809523809523809</td><td>0</td><td>0</td><td>0</td><td>0</td><td>131</td><td>0.7404580152671756</td><td>0</td><td>212</td><td>0.5094339622641509</td><td>0</td></tr><tr><td></td><td>EGLP-hassan01</td><td>42</td><td>0.8571428571428571</td><td>0.02380952380952381</td><td>0</td><td>0</td><td>0</td><td>95</td><td>0.9473684210526315</td><td>0</td><td>234</td><td>0.9401709401709402</td><td>0</td></tr><tr><td></td><td>EGLP-amrwael</td><td>24</td><td>0.5833333333333334</td><td>0</td><td>0</td><td>0</td><td>0</td><td>49</td><td>0.5510204081632653</td><td>0.1020408163265306</td><td>105</td><td>0.9238095238095239</td><td>0</td></tr><tr><td></td><td>EGLP-poulami</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td></td><td>MEAdult-EGLP01小组</td><td>420</td><td>0.8928571428571429</td><td>0.01428571428571429</td><td>0</td><td>0</td><td>0</td><td>936</td><td>0.8611111111111112</td><td>0.04594017094017094</td><td>1831</td><td>0.9186237028945932</td><td>0</td></tr></table>
-  </main>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="header-title">SOP Performance Report</div>
+                    <div class="header-subtitle">Generated: 2026-01-28 12:15:15</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+        <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+        <button class="tab-btn" onclick="showTab('eglp-teams')">EGLP Teams</button>
+        <button class="tab-btn" onclick="showTab('eglp-ranking')">EGLP Ranking</button>
+        <button class="tab-btn" onclick="showTab('eglp-totals')">EGLP Totals</button>
+        <button class="tab-btn" onclick="showTab('jolp-teams')">JOLP Teams</button>
+        <button class="tab-btn" onclick="showTab('jolp-ranking')">JOLP Ranking</button>
+        <button class="tab-btn" onclick="showTab('jolp-totals')">JOLP Totals</button>
+    </nav>
+
+    <div class="container">
+
+    <style>
+        .tab-nav { display: none; }
+        .tab-content { display: block; }
+        .tab-content.active { display: block; }
+        .header { position: static; }
+    </style>
+    
+        <div id="eglp-teams" class="tab-content active">
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-EGLP-GCC01小组 <span class="badge">22 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-farghaly</td>
+                            <td><strong>296</strong></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>115</td>
+                            <td><span class="color-pill scale-medium-high">93.9%</span></td>
+                            <td>106</td>
+                            <td><span class="color-pill scale-high">97.2%</span></td>
+                            <td>45</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-moustafaa</td>
+                            <td><strong>123</strong></td>
+                            <td>62</td>
+                            <td><span class="color-pill scale-high">96.8%</span></td>
+                            <td>23</td>
+                            <td><span class="color-pill scale-high">95.7%</span></td>
+                            <td>22</td>
+                            <td><span class="color-pill scale-high">95.5%</span></td>
+                            <td>16</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ssabry</td>
+                            <td><strong>298</strong></td>
+                            <td>29</td>
+                            <td><span class="color-pill scale-high">96.6%</span></td>
+                            <td>147</td>
+                            <td><span class="color-pill scale-high">99.3%</span></td>
+                            <td>91</td>
+                            <td><span class="color-pill scale-medium-high">87.9%</span></td>
+                            <td>31</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-lubnamohamed</td>
+                            <td><strong>102</strong></td>
+                            <td>77</td>
+                            <td><span class="color-pill scale-high">96.1%</span></td>
+                            <td>4</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>16</td>
+                            <td><span class="color-pill scale-medium-high">87.5%</span></td>
+                            <td>5</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-hady</td>
+                            <td><strong>335</strong></td>
+                            <td>23</td>
+                            <td><span class="color-pill scale-high">95.7%</span></td>
+                            <td>122</td>
+                            <td><span class="color-pill scale-low">77.0%</span></td>
+                            <td>144</td>
+                            <td><span class="color-pill scale-high">99.3%</span></td>
+                            <td>46</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mohamedibrahim</td>
+                            <td><strong>221</strong></td>
+                            <td>22</td>
+                            <td><span class="color-pill scale-high">95.5%</span></td>
+                            <td>89</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>87</td>
+                            <td><span class="color-pill scale-high">98.9%</span></td>
+                            <td>23</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-esraaahmed</td>
+                            <td><strong>90</strong></td>
+                            <td>72</td>
+                            <td><span class="color-pill scale-high">94.4%</span></td>
+                            <td>2</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>6</td>
+                            <td><span class="color-pill scale-medium-high">83.3%</span></td>
+                            <td>10</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-abdallah01</td>
+                            <td><strong>313</strong></td>
+                            <td>31</td>
+                            <td><span class="color-pill scale-high">93.5%</span></td>
+                            <td>107</td>
+                            <td><span class="color-pill scale-medium">88.8%</span></td>
+                            <td>132</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>43</td>
+                            <td><span class="color-pill scale-high">95.3%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-omnia01</td>
+                            <td><strong>316</strong></td>
+                            <td>31</td>
+                            <td><span class="color-pill scale-high">93.5%</span></td>
+                            <td>114</td>
+                            <td><span class="color-pill scale-medium-high">94.7%</span></td>
+                            <td>130</td>
+                            <td><span class="color-pill scale-high">99.2%</span></td>
+                            <td>41</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmednabil</td>
+                            <td><strong>234</strong></td>
+                            <td>31</td>
+                            <td><span class="color-pill scale-high">93.5%</span></td>
+                            <td>83</td>
+                            <td><span class="color-pill scale-medium-high">94.0%</span></td>
+                            <td>81</td>
+                            <td><span class="color-pill scale-high">97.5%</span></td>
+                            <td>39</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-eslammasoud</td>
+                            <td><strong>125</strong></td>
+                            <td>46</td>
+                            <td><span class="color-pill scale-high">93.5%</span></td>
+                            <td>16</td>
+                            <td><span class="color-pill scale-medium">87.5%</span></td>
+                            <td>39</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>24</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-fatimagouda</td>
+                            <td><strong>120</strong></td>
+                            <td>60</td>
+                            <td><span class="color-pill scale-high">93.3%</span></td>
+                            <td>28</td>
+                            <td><span class="color-pill scale-medium">89.3%</span></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>13</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedmoham</td>
+                            <td><strong>249</strong></td>
+                            <td>29</td>
+                            <td><span class="color-pill scale-high">93.1%</span></td>
+                            <td>77</td>
+                            <td><span class="color-pill scale-high">96.1%</span></td>
+                            <td>93</td>
+                            <td><span class="color-pill scale-high">98.9%</span></td>
+                            <td>50</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mmahmoud</td>
+                            <td><strong>323</strong></td>
+                            <td>28</td>
+                            <td><span class="color-pill scale-high">92.9%</span></td>
+                            <td>125</td>
+                            <td><span class="color-pill scale-high">98.4%</span></td>
+                            <td>141</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>29</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-habibamahmoud</td>
+                            <td><strong>119</strong></td>
+                            <td>52</td>
+                            <td><span class="color-pill scale-high">90.4%</span></td>
+                            <td>24</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>23</td>
+                            <td><span class="color-pill scale-high">95.7%</span></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mennaalla</td>
+                            <td><strong>394</strong></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-high">90.0%</span></td>
+                            <td>147</td>
+                            <td><span class="color-pill scale-very-low">70.7%</span></td>
+                            <td>163</td>
+                            <td><span class="color-pill scale-high">94.5%</span></td>
+                            <td>54</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-fabdelaziz</td>
+                            <td><strong>332</strong></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-high">90.0%</span></td>
+                            <td>135</td>
+                            <td><span class="color-pill scale-medium-high">91.1%</span></td>
+                            <td>123</td>
+                            <td><span class="color-pill scale-medium-high">88.6%</span></td>
+                            <td>44</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-halla</td>
+                            <td><strong>210</strong></td>
+                            <td>26</td>
+                            <td><span class="color-pill scale-medium-high">88.5%</span></td>
+                            <td>65</td>
+                            <td><span class="color-pill scale-low">78.5%</span></td>
+                            <td>86</td>
+                            <td><span class="color-pill scale-very-low">39.5%</span></td>
+                            <td>33</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-imang</td>
+                            <td><strong>353</strong></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-medium-high">83.3%</span></td>
+                            <td>123</td>
+                            <td><span class="color-pill scale-high">97.6%</span></td>
+                            <td>142</td>
+                            <td><span class="color-pill scale-high">96.5%</span></td>
+                            <td>58</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-OmarM</td>
+                            <td><strong>332</strong></td>
+                            <td>17</td>
+                            <td><span class="color-pill scale-medium-high">82.4%</span></td>
+                            <td>141</td>
+                            <td><span class="color-pill scale-high">95.0%</span></td>
+                            <td>140</td>
+                            <td><span class="color-pill scale-high">99.3%</span></td>
+                            <td>34</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-gannam</td>
+                            <td><strong>326</strong></td>
+                            <td>25</td>
+                            <td><span class="color-pill scale-medium">76.0%</span></td>
+                            <td>144</td>
+                            <td><span class="color-pill scale-medium-high">93.8%</span></td>
+                            <td>116</td>
+                            <td><span class="color-pill scale-medium-low">64.7%</span></td>
+                            <td>41</td>
+                            <td><span class="color-pill scale-very-low">70.7%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51abdelrahman</td>
+                            <td><strong>87</strong></td>
+                            <td>5</td>
+                            <td><span class="color-pill scale-very-low">40.0%</span></td>
+                            <td>36</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>34</td>
+                            <td><span class="color-pill scale-high">97.1%</span></td>
+                            <td>12</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>5298</strong></td>
+                            <td><strong>786</strong></td>
+                            <td><strong>92.4%</strong></td>
+                            <td><strong>1867</strong></td>
+                            <td><strong>91.5%</strong></td>
+                            <td><strong>1934</strong></td>
+                            <td><strong>92.3%</strong></td>
+                            <td><strong>711</strong></td>
+                            <td><strong>98.0%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-EGLP01小组 <span class="badge">21 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-begada</td>
+                            <td><strong>338</strong></td>
+                            <td>18</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>124</td>
+                            <td><span class="color-pill scale-high">96.8%</span></td>
+                            <td>166</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-aaya</td>
+                            <td><strong>324</strong></td>
+                            <td>21</td>
+                            <td><span class="color-pill scale-high">95.2%</span></td>
+                            <td>86</td>
+                            <td><span class="color-pill scale-high">91.9%</span></td>
+                            <td>156</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>61</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hagarh</td>
+                            <td><strong>330</strong></td>
+                            <td>18</td>
+                            <td><span class="color-pill scale-high">94.4%</span></td>
+                            <td>127</td>
+                            <td><span class="color-pill scale-medium-high">74.0%</span></td>
+                            <td>138</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>47</td>
+                            <td><span class="color-pill scale-high">93.6%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-rehababdelreheem</td>
+                            <td><strong>74</strong></td>
+                            <td>52</td>
+                            <td><span class="color-pill scale-high">94.2%</span></td>
+                            <td>4</td>
+                            <td><span class="color-pill scale-medium-high">75.0%</span></td>
+                            <td>14</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>4</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-youssefyasser</td>
+                            <td><strong>312</strong></td>
+                            <td>16</td>
+                            <td><span class="color-pill scale-high">93.8%</span></td>
+                            <td>108</td>
+                            <td><span class="color-pill scale-high">96.3%</span></td>
+                            <td>144</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>44</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amalyossef</td>
+                            <td><strong>372</strong></td>
+                            <td>25</td>
+                            <td><span class="color-pill scale-high">92.0%</span></td>
+                            <td>132</td>
+                            <td><span class="color-pill scale-high">90.9%</span></td>
+                            <td>169</td>
+                            <td><span class="color-pill scale-high">96.4%</span></td>
+                            <td>46</td>
+                            <td><span class="color-pill scale-high">89.1%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-yara</td>
+                            <td><strong>326</strong></td>
+                            <td>24</td>
+                            <td><span class="color-pill scale-high">91.7%</span></td>
+                            <td>99</td>
+                            <td><span class="color-pill scale-high">96.0%</span></td>
+                            <td>153</td>
+                            <td><span class="color-pill scale-high">99.3%</span></td>
+                            <td>50</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-enasa</td>
+                            <td><strong>319</strong></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-high">90.0%</span></td>
+                            <td>101</td>
+                            <td><span class="color-pill scale-high">93.1%</span></td>
+                            <td>164</td>
+                            <td><span class="color-pill scale-high">98.8%</span></td>
+                            <td>34</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-mai01</td>
+                            <td><strong>338</strong></td>
+                            <td>17</td>
+                            <td><span class="color-pill scale-high">88.2%</span></td>
+                            <td>120</td>
+                            <td><span class="color-pill scale-high">97.5%</span></td>
+                            <td>138</td>
+                            <td><span class="color-pill scale-high">97.8%</span></td>
+                            <td>63</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nourhanahm</td>
+                            <td><strong>365</strong></td>
+                            <td>17</td>
+                            <td><span class="color-pill scale-high">88.2%</span></td>
+                            <td>120</td>
+                            <td><span class="color-pill scale-high">95.8%</span></td>
+                            <td>175</td>
+                            <td><span class="color-pill scale-high">97.7%</span></td>
+                            <td>53</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amira</td>
+                            <td><strong>378</strong></td>
+                            <td>22</td>
+                            <td><span class="color-pill scale-high">86.4%</span></td>
+                            <td>120</td>
+                            <td><span class="color-pill scale-high">94.2%</span></td>
+                            <td>186</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>50</td>
+                            <td><span class="color-pill scale-high">98.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-Lobna</td>
+                            <td><strong>141</strong></td>
+                            <td>14</td>
+                            <td><span class="color-pill scale-high">85.7%</span></td>
+                            <td>56</td>
+                            <td><span class="color-pill scale-high">98.2%</span></td>
+                            <td>71</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-habdelaziz</td>
+                            <td><strong>348</strong></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-high">85.0%</span></td>
+                            <td>137</td>
+                            <td><span class="color-pill scale-high">97.1%</span></td>
+                            <td>141</td>
+                            <td><span class="color-pill scale-high">98.6%</span></td>
+                            <td>50</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hadeerha</td>
+                            <td><strong>286</strong></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-high">85.0%</span></td>
+                            <td>97</td>
+                            <td><span class="color-pill scale-high">94.8%</span></td>
+                            <td>120</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-kkhalil</td>
+                            <td><strong>310</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-high">84.2%</span></td>
+                            <td>116</td>
+                            <td><span class="color-pill scale-high">95.7%</span></td>
+                            <td>120</td>
+                            <td><span class="color-pill scale-high">98.3%</span></td>
+                            <td>55</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nawaraa</td>
+                            <td><strong>330</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-high">84.2%</span></td>
+                            <td>113</td>
+                            <td><span class="color-pill scale-high">97.3%</span></td>
+                            <td>161</td>
+                            <td><span class="color-pill scale-high">99.4%</span></td>
+                            <td>37</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amrom</td>
+                            <td><strong>313</strong></td>
+                            <td>23</td>
+                            <td><span class="color-pill scale-medium-high">82.6%</span></td>
+                            <td>85</td>
+                            <td><span class="color-pill scale-high">97.6%</span></td>
+                            <td>157</td>
+                            <td><span class="color-pill scale-high">99.4%</span></td>
+                            <td>48</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-radwa</td>
+                            <td><strong>365</strong></td>
+                            <td>26</td>
+                            <td><span class="color-pill scale-medium-high">80.8%</span></td>
+                            <td>114</td>
+                            <td><span class="color-pill scale-high">84.2%</span></td>
+                            <td>179</td>
+                            <td><span class="color-pill scale-high">96.6%</span></td>
+                            <td>46</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-aliam</td>
+                            <td><strong>336</strong></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-medium-high">75.0%</span></td>
+                            <td>121</td>
+                            <td><span class="color-pill scale-high">95.9%</span></td>
+                            <td>156</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>39</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-shams</td>
+                            <td><strong>336</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-medium-high">73.7%</span></td>
+                            <td>106</td>
+                            <td><span class="color-pill scale-high">95.3%</span></td>
+                            <td>158</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>53</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51remonda</td>
+                            <td><strong>2</strong></td>
+                            <td>2</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>6243</strong></td>
+                            <td><strong>432</strong></td>
+                            <td><strong>87.5%</strong></td>
+                            <td><strong>2086</strong></td>
+                            <td><strong>93.5%</strong></td>
+                            <td><strong>2866</strong></td>
+                            <td><strong>99.0%</strong></td>
+                            <td><strong>859</strong></td>
+                            <td><strong>99.0%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-EGLP02小组 <span class="badge">11 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-fathyabdelati</td>
+                            <td><strong>248</strong></td>
+                            <td>52</td>
+                            <td><span class="color-pill scale-high">94.2%</span></td>
+                            <td>70</td>
+                            <td><span class="color-pill scale-high">92.9%</span></td>
+                            <td>96</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-wafaa</td>
+                            <td><strong>351</strong></td>
+                            <td>53</td>
+                            <td><span class="color-pill scale-high">92.5%</span></td>
+                            <td>101</td>
+                            <td><span class="color-pill scale-medium-high">91.1%</span></td>
+                            <td>159</td>
+                            <td><span class="color-pill scale-high">95.6%</span></td>
+                            <td>38</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hossam01</td>
+                            <td><strong>365</strong></td>
+                            <td>51</td>
+                            <td><span class="color-pill scale-high">92.2%</span></td>
+                            <td>102</td>
+                            <td><span class="color-pill scale-high">97.1%</span></td>
+                            <td>153</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>59</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mahmoudismail</td>
+                            <td><strong>302</strong></td>
+                            <td>48</td>
+                            <td><span class="color-pill scale-high">91.7%</span></td>
+                            <td>76</td>
+                            <td><span class="color-pill scale-high">94.7%</span></td>
+                            <td>155</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>23</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-osamasalah</td>
+                            <td><strong>389</strong></td>
+                            <td>58</td>
+                            <td><span class="color-pill scale-high">91.4%</span></td>
+                            <td>127</td>
+                            <td><span class="color-pill scale-high">92.1%</span></td>
+                            <td>168</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>36</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51abdelfattah01</td>
+                            <td><strong>400</strong></td>
+                            <td>57</td>
+                            <td><span class="color-pill scale-high">91.2%</span></td>
+                            <td>123</td>
+                            <td><span class="color-pill scale-medium">84.6%</span></td>
+                            <td>192</td>
+                            <td><span class="color-pill scale-medium-high">91.7%</span></td>
+                            <td>28</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-passantahmed</td>
+                            <td><strong>372</strong></td>
+                            <td>52</td>
+                            <td><span class="color-pill scale-high">90.4%</span></td>
+                            <td>104</td>
+                            <td><span class="color-pill scale-high">94.2%</span></td>
+                            <td>179</td>
+                            <td><span class="color-pill scale-very-low">68.2%</span></td>
+                            <td>37</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-imansayed</td>
+                            <td><strong>348</strong></td>
+                            <td>54</td>
+                            <td><span class="color-pill scale-medium-high">88.9%</span></td>
+                            <td>107</td>
+                            <td><span class="color-pill scale-high">97.2%</span></td>
+                            <td>153</td>
+                            <td><span class="color-pill scale-high">96.1%</span></td>
+                            <td>34</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedamrali</td>
+                            <td><strong>378</strong></td>
+                            <td>52</td>
+                            <td><span class="color-pill scale-medium-high">86.5%</span></td>
+                            <td>114</td>
+                            <td><span class="color-pill scale-high">92.1%</span></td>
+                            <td>163</td>
+                            <td><span class="color-pill scale-medium-low">84.0%</span></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51ahmed03</td>
+                            <td><strong>382</strong></td>
+                            <td>48</td>
+                            <td><span class="color-pill scale-medium-high">85.4%</span></td>
+                            <td>104</td>
+                            <td><span class="color-pill scale-high">97.1%</span></td>
+                            <td>168</td>
+                            <td><span class="color-pill scale-high">99.4%</span></td>
+                            <td>62</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hamedem</td>
+                            <td><strong>202</strong></td>
+                            <td>24</td>
+                            <td><span class="color-pill scale-very-low">66.7%</span></td>
+                            <td>67</td>
+                            <td><span class="color-pill scale-very-low">64.2%</span></td>
+                            <td>110</td>
+                            <td><span class="color-pill scale-medium">88.2%</span></td>
+                            <td>1</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>3737</strong></td>
+                            <td><strong>549</strong></td>
+                            <td><strong>89.4%</strong></td>
+                            <td><strong>1095</strong></td>
+                            <td><strong>91.3%</strong></td>
+                            <td><strong>1696</strong></td>
+                            <td><strong>92.6%</strong></td>
+                            <td><strong>397</strong></td>
+                            <td><strong>99.7%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-EGLP03小组 <span class="badge">13 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-passantga</td>
+                            <td><strong>381</strong></td>
+                            <td>59</td>
+                            <td><span class="color-pill scale-high">96.6%</span></td>
+                            <td>121</td>
+                            <td><span class="color-pill scale-high">98.3%</span></td>
+                            <td>151</td>
+                            <td><span class="color-pill scale-high">98.0%</span></td>
+                            <td>50</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-seifeldeen</td>
+                            <td><strong>355</strong></td>
+                            <td>43</td>
+                            <td><span class="color-pill scale-high">95.3%</span></td>
+                            <td>97</td>
+                            <td><span class="color-pill scale-high">97.9%</span></td>
+                            <td>159</td>
+                            <td><span class="color-pill scale-high">99.4%</span></td>
+                            <td>56</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-aminabdelsatar</td>
+                            <td><strong>373</strong></td>
+                            <td>57</td>
+                            <td><span class="color-pill scale-medium-high">94.7%</span></td>
+                            <td>109</td>
+                            <td><span class="color-pill scale-high">95.4%</span></td>
+                            <td>167</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>40</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mahmoudmo</td>
+                            <td><strong>314</strong></td>
+                            <td>36</td>
+                            <td><span class="color-pill scale-medium-high">94.4%</span></td>
+                            <td>92</td>
+                            <td><span class="color-pill scale-high">98.9%</span></td>
+                            <td>150</td>
+                            <td><span class="color-pill scale-very-low">80.7%</span></td>
+                            <td>36</td>
+                            <td><span class="color-pill scale-medium-low">88.9%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nadaelneklawy</td>
+                            <td><strong>145</strong></td>
+                            <td>94</td>
+                            <td><span class="color-pill scale-medium-high">93.6%</span></td>
+                            <td>4</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>41</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>6</td>
+                            <td><span class="color-pill scale-very-low">83.3%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ibrahimalbaghdadi</td>
+                            <td><strong>380</strong></td>
+                            <td>52</td>
+                            <td><span class="color-pill scale-medium">92.3%</span></td>
+                            <td>106</td>
+                            <td><span class="color-pill scale-high">98.1%</span></td>
+                            <td>171</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>51</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ayaam</td>
+                            <td><strong>357</strong></td>
+                            <td>59</td>
+                            <td><span class="color-pill scale-medium-low">91.5%</span></td>
+                            <td>90</td>
+                            <td><span class="color-pill scale-high">96.7%</span></td>
+                            <td>159</td>
+                            <td><span class="color-pill scale-medium">91.2%</span></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mahmoudsamy</td>
+                            <td><strong>328</strong></td>
+                            <td>44</td>
+                            <td><span class="color-pill scale-medium-low">90.9%</span></td>
+                            <td>109</td>
+                            <td><span class="color-pill scale-high">95.4%</span></td>
+                            <td>139</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>36</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-abdelrahmanmansour</td>
+                            <td><strong>340</strong></td>
+                            <td>51</td>
+                            <td><span class="color-pill scale-medium-low">90.2%</span></td>
+                            <td>99</td>
+                            <td><span class="color-pill scale-high">96.0%</span></td>
+                            <td>143</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>47</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51samy</td>
+                            <td><strong>359</strong></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-low">89.8%</span></td>
+                            <td>110</td>
+                            <td><span class="color-pill scale-high">97.3%</span></td>
+                            <td>150</td>
+                            <td><span class="color-pill scale-high">99.3%</span></td>
+                            <td>50</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51mostafa</td>
+                            <td><strong>317</strong></td>
+                            <td>53</td>
+                            <td><span class="color-pill scale-low">88.7%</span></td>
+                            <td>81</td>
+                            <td><span class="color-pill scale-medium-high">91.4%</span></td>
+                            <td>134</td>
+                            <td><span class="color-pill scale-high">99.3%</span></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-medium-high">95.9%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-ABDULRAHMAN</td>
+                            <td><strong>355</strong></td>
+                            <td>41</td>
+                            <td><span class="color-pill scale-very-low">87.8%</span></td>
+                            <td>106</td>
+                            <td><span class="color-pill scale-very-low">63.2%</span></td>
+                            <td>164</td>
+                            <td><span class="color-pill scale-high">97.6%</span></td>
+                            <td>44</td>
+                            <td><span class="color-pill scale-medium">93.2%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-esraamahmoud</td>
+                            <td><strong>342</strong></td>
+                            <td>46</td>
+                            <td><span class="color-pill scale-very-low">87.0%</span></td>
+                            <td>100</td>
+                            <td><span class="color-pill scale-medium">87.0%</span></td>
+                            <td>134</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>62</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>4346</strong></td>
+                            <td><strong>684</strong></td>
+                            <td><strong>92.0%</strong></td>
+                            <td><strong>1224</strong></td>
+                            <td><strong>93.0%</strong></td>
+                            <td><strong>1862</strong></td>
+                            <td><strong>97.2%</strong></td>
+                            <td><strong>576</strong></td>
+                            <td><strong>98.3%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-EGLP04小组 <span class="badge">14 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-ahmedmoha</td>
+                            <td><strong>332</strong></td>
+                            <td>38</td>
+                            <td><span class="color-pill scale-high">97.4%</span></td>
+                            <td>101</td>
+                            <td><span class="color-pill scale-high">91.1%</span></td>
+                            <td>152</td>
+                            <td><span class="color-pill scale-high">98.7%</span></td>
+                            <td>41</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedn</td>
+                            <td><strong>305</strong></td>
+                            <td>38</td>
+                            <td><span class="color-pill scale-high">97.4%</span></td>
+                            <td>88</td>
+                            <td><span class="color-pill scale-high">96.6%</span></td>
+                            <td>144</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>35</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ibrahemharidy</td>
+                            <td><strong>50</strong></td>
+                            <td>33</td>
+                            <td><span class="color-pill scale-high">93.9%</span></td>
+                            <td>5</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>10</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>2</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-hager</td>
+                            <td><strong>328</strong></td>
+                            <td>29</td>
+                            <td><span class="color-pill scale-high">93.1%</span></td>
+                            <td>93</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>161</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>45</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-saraht</td>
+                            <td><strong>346</strong></td>
+                            <td>36</td>
+                            <td><span class="color-pill scale-high">91.7%</span></td>
+                            <td>105</td>
+                            <td><span class="color-pill scale-high">97.1%</span></td>
+                            <td>160</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>45</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51abdellatif01</td>
+                            <td><strong>164</strong></td>
+                            <td>35</td>
+                            <td><span class="color-pill scale-high">91.4%</span></td>
+                            <td>44</td>
+                            <td><span class="color-pill scale-medium-high">75.0%</span></td>
+                            <td>85</td>
+                            <td><span class="color-pill scale-medium">55.3%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51ahmed</td>
+                            <td><strong>351</strong></td>
+                            <td>39</td>
+                            <td><span class="color-pill scale-high">89.7%</span></td>
+                            <td>119</td>
+                            <td><span class="color-pill scale-high">92.4%</span></td>
+                            <td>171</td>
+                            <td><span class="color-pill scale-high">94.7%</span></td>
+                            <td>22</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mohamed05</td>
+                            <td><strong>374</strong></td>
+                            <td>39</td>
+                            <td><span class="color-pill scale-high">89.7%</span></td>
+                            <td>104</td>
+                            <td><span class="color-pill scale-high">96.2%</span></td>
+                            <td>168</td>
+                            <td><span class="color-pill scale-high">98.2%</span></td>
+                            <td>63</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51mohamed01</td>
+                            <td><strong>342</strong></td>
+                            <td>36</td>
+                            <td><span class="color-pill scale-high">88.9%</span></td>
+                            <td>102</td>
+                            <td><span class="color-pill scale-high">95.1%</span></td>
+                            <td>162</td>
+                            <td><span class="color-pill scale-high">98.8%</span></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-high">95.2%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-K. Ashraf</td>
+                            <td><strong>315</strong></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-high">87.5%</span></td>
+                            <td>105</td>
+                            <td><span class="color-pill scale-high">91.4%</span></td>
+                            <td>131</td>
+                            <td><span class="color-pill scale-high">93.9%</span></td>
+                            <td>47</td>
+                            <td><span class="color-pill scale-high">89.4%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-hatem</td>
+                            <td><strong>308</strong></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-high">87.5%</span></td>
+                            <td>113</td>
+                            <td><span class="color-pill scale-high">93.8%</span></td>
+                            <td>116</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>47</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-sameh</td>
+                            <td><strong>298</strong></td>
+                            <td>29</td>
+                            <td><span class="color-pill scale-high">86.2%</span></td>
+                            <td>81</td>
+                            <td><span class="color-pill scale-high">95.1%</span></td>
+                            <td>147</td>
+                            <td><span class="color-pill scale-high">97.3%</span></td>
+                            <td>41</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedt</td>
+                            <td><strong>280</strong></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-high">84.4%</span></td>
+                            <td>89</td>
+                            <td><span class="color-pill scale-high">87.6%</span></td>
+                            <td>124</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>35</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amala</td>
+                            <td><strong>1</strong></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>1</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>3794</strong></td>
+                            <td><strong>448</strong></td>
+                            <td><strong>90.8%</strong></td>
+                            <td><strong>1149</strong></td>
+                            <td><strong>93.5%</strong></td>
+                            <td><strong>1732</strong></td>
+                            <td><strong>96.1%</strong></td>
+                            <td><strong>465</strong></td>
+                            <td><strong>98.5%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-EGLP05小组 <span class="badge">9 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-bassem</td>
+                            <td><strong>340</strong></td>
+                            <td>25</td>
+                            <td><span class="color-pill scale-high">96.0%</span></td>
+                            <td>93</td>
+                            <td><span class="color-pill scale-very-low">92.5%</span></td>
+                            <td>190</td>
+                            <td><span class="color-pill scale-medium-low">97.4%</span></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-shrouqhaddad</td>
+                            <td><strong>227</strong></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-medium-high">93.3%</span></td>
+                            <td>67</td>
+                            <td><span class="color-pill scale-low">94.0%</span></td>
+                            <td>105</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>25</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-shahdmahmoud</td>
+                            <td><strong>340</strong></td>
+                            <td>25</td>
+                            <td><span class="color-pill scale-medium">92.0%</span></td>
+                            <td>109</td>
+                            <td><span class="color-pill scale-very-low">93.6%</span></td>
+                            <td>171</td>
+                            <td><span class="color-pill scale-very-low">95.9%</span></td>
+                            <td>35</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-noha</td>
+                            <td><strong>310</strong></td>
+                            <td>24</td>
+                            <td><span class="color-pill scale-medium">91.7%</span></td>
+                            <td>100</td>
+                            <td><span class="color-pill scale-high">99.0%</span></td>
+                            <td>142</td>
+                            <td><span class="color-pill scale-medium">98.6%</span></td>
+                            <td>44</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-gehanibrahim</td>
+                            <td><strong>217</strong></td>
+                            <td>33</td>
+                            <td><span class="color-pill scale-medium">90.9%</span></td>
+                            <td>80</td>
+                            <td><span class="color-pill scale-medium">97.5%</span></td>
+                            <td>96</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>8</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mohamed06</td>
+                            <td><strong>323</strong></td>
+                            <td>21</td>
+                            <td><span class="color-pill scale-medium-low">90.5%</span></td>
+                            <td>132</td>
+                            <td><span class="color-pill scale-medium">97.0%</span></td>
+                            <td>127</td>
+                            <td><span class="color-pill scale-medium-high">99.2%</span></td>
+                            <td>43</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-abdelrhmanbaher</td>
+                            <td><strong>316</strong></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-medium-low">90.0%</span></td>
+                            <td>105</td>
+                            <td><span class="color-pill scale-medium-high">98.1%</span></td>
+                            <td>144</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>37</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-basmamohamed</td>
+                            <td><strong>60</strong></td>
+                            <td>39</td>
+                            <td><span class="color-pill scale-medium-low">89.7%</span></td>
+                            <td>5</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>15</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>1</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-yasmin01</td>
+                            <td><strong>327</strong></td>
+                            <td>27</td>
+                            <td><span class="color-pill scale-very-low">85.2%</span></td>
+                            <td>111</td>
+                            <td><span class="color-pill scale-medium">96.4%</span></td>
+                            <td>159</td>
+                            <td><span class="color-pill scale-high">99.4%</span></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>2460</strong></td>
+                            <td><strong>254</strong></td>
+                            <td><strong>90.9%</strong></td>
+                            <td><strong>802</strong></td>
+                            <td><strong>96.1%</strong></td>
+                            <td><strong>1149</strong></td>
+                            <td><strong>98.6%</strong></td>
+                            <td><strong>255</strong></td>
+                            <td><strong>100.0%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-EGLP06小组 <span class="badge">11 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-esraaba</td>
+                            <td><strong>294</strong></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-high">96.9%</span></td>
+                            <td>72</td>
+                            <td><span class="color-pill scale-high">97.2%</span></td>
+                            <td>143</td>
+                            <td><span class="color-pill scale-high">98.6%</span></td>
+                            <td>47</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amrhassan</td>
+                            <td><strong>133</strong></td>
+                            <td>90</td>
+                            <td><span class="color-pill scale-high">95.6%</span></td>
+                            <td>6</td>
+                            <td><span class="color-pill scale-very-low">66.7%</span></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>5</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-rana01</td>
+                            <td><strong>318</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-high">94.7%</span></td>
+                            <td>106</td>
+                            <td><span class="color-pill scale-medium-high">90.6%</span></td>
+                            <td>139</td>
+                            <td><span class="color-pill scale-high">96.4%</span></td>
+                            <td>54</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-abdelaziznaser</td>
+                            <td><strong>374</strong></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-high">93.8%</span></td>
+                            <td>121</td>
+                            <td><span class="color-pill scale-high">95.0%</span></td>
+                            <td>162</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>59</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51khaled03</td>
+                            <td><strong>420</strong></td>
+                            <td>38</td>
+                            <td><span class="color-pill scale-high">92.1%</span></td>
+                            <td>106</td>
+                            <td><span class="color-pill scale-high">96.2%</span></td>
+                            <td>208</td>
+                            <td><span class="color-pill scale-medium-high">90.9%</span></td>
+                            <td>68</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-habdelal</td>
+                            <td><strong>383</strong></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-high">90.5%</span></td>
+                            <td>107</td>
+                            <td><span class="color-pill scale-high">97.2%</span></td>
+                            <td>173</td>
+                            <td><span class="color-pill scale-low">74.6%</span></td>
+                            <td>61</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-sarraa</td>
+                            <td><strong>374</strong></td>
+                            <td>26</td>
+                            <td><span class="color-pill scale-high">88.5%</span></td>
+                            <td>113</td>
+                            <td><span class="color-pill scale-high">95.6%</span></td>
+                            <td>182</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>53</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-yousef</td>
+                            <td><strong>381</strong></td>
+                            <td>22</td>
+                            <td><span class="color-pill scale-high">86.4%</span></td>
+                            <td>135</td>
+                            <td><span class="color-pill scale-medium-low">80.0%</span></td>
+                            <td>179</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>45</td>
+                            <td><span class="color-pill scale-high">95.6%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nermeen</td>
+                            <td><strong>325</strong></td>
+                            <td>35</td>
+                            <td><span class="color-pill scale-high">85.7%</span></td>
+                            <td>99</td>
+                            <td><span class="color-pill scale-medium">83.8%</span></td>
+                            <td>133</td>
+                            <td><span class="color-pill scale-medium-low">78.2%</span></td>
+                            <td>58</td>
+                            <td><span class="color-pill scale-high">87.9%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-habibamourad</td>
+                            <td><strong>229</strong></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-high">83.3%</span></td>
+                            <td>70</td>
+                            <td><span class="color-pill scale-high">92.9%</span></td>
+                            <td>96</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>33</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-sherifa</td>
+                            <td><strong>138</strong></td>
+                            <td>5</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>64</td>
+                            <td><span class="color-pill scale-medium-low">78.1%</span></td>
+                            <td>69</td>
+                            <td><span class="color-pill scale-very-low">62.3%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>3369</strong></td>
+                            <td><strong>371</strong></td>
+                            <td><strong>90.3%</strong></td>
+                            <td><strong>999</strong></td>
+                            <td><strong>90.6%</strong></td>
+                            <td><strong>1516</strong></td>
+                            <td><strong>91.8%</strong></td>
+                            <td><strong>483</strong></td>
+                            <td><strong>98.1%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-EGLP07小组 <span class="badge">12 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-ahmedad</td>
+                            <td><strong>124</strong></td>
+                            <td>9</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>37</td>
+                            <td><span class="color-pill scale-medium-high">75.7%</span></td>
+                            <td>59</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-high">84.2%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-dohakhater</td>
+                            <td><strong>202</strong></td>
+                            <td>23</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>66</td>
+                            <td><span class="color-pill scale-high">98.5%</span></td>
+                            <td>83</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-manarsamy</td>
+                            <td><strong>357</strong></td>
+                            <td>18</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>146</td>
+                            <td><span class="color-pill scale-high">97.9%</span></td>
+                            <td>145</td>
+                            <td><span class="color-pill scale-high">99.3%</span></td>
+                            <td>48</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-mokhtar</td>
+                            <td><strong>351</strong></td>
+                            <td>17</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>116</td>
+                            <td><span class="color-pill scale-high">95.7%</span></td>
+                            <td>176</td>
+                            <td><span class="color-pill scale-high">98.9%</span></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hussienabdelhamid</td>
+                            <td><strong>87</strong></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-high">98.0%</span></td>
+                            <td>9</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>27</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>2</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedmohs</td>
+                            <td><strong>329</strong></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-high">95.0%</span></td>
+                            <td>126</td>
+                            <td><span class="color-pill scale-high">98.4%</span></td>
+                            <td>148</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>35</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedal</td>
+                            <td><strong>330</strong></td>
+                            <td>18</td>
+                            <td><span class="color-pill scale-high">94.4%</span></td>
+                            <td>103</td>
+                            <td><span class="color-pill scale-high">98.1%</span></td>
+                            <td>150</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>59</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mohamedahmed</td>
+                            <td><strong>321</strong></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-high">90.0%</span></td>
+                            <td>128</td>
+                            <td><span class="color-pill scale-high">93.0%</span></td>
+                            <td>124</td>
+                            <td><span class="color-pill scale-high">99.2%</span></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-yasmin</td>
+                            <td><strong>337</strong></td>
+                            <td>9</td>
+                            <td><span class="color-pill scale-high">88.9%</span></td>
+                            <td>110</td>
+                            <td><span class="color-pill scale-high">86.4%</span></td>
+                            <td>160</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>58</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mohamedabdelazize</td>
+                            <td><strong>321</strong></td>
+                            <td>17</td>
+                            <td><span class="color-pill scale-medium-high">82.4%</span></td>
+                            <td>103</td>
+                            <td><span class="color-pill scale-high">97.1%</span></td>
+                            <td>148</td>
+                            <td><span class="color-pill scale-high">99.3%</span></td>
+                            <td>53</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-shady</td>
+                            <td><strong>334</strong></td>
+                            <td>17</td>
+                            <td><span class="color-pill scale-medium-high">82.4%</span></td>
+                            <td>122</td>
+                            <td><span class="color-pill scale-high">96.7%</span></td>
+                            <td>138</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>57</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-marwan01</td>
+                            <td><strong>2</strong></td>
+                            <td>2</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>3095</strong></td>
+                            <td><strong>219</strong></td>
+                            <td><strong>93.6%</strong></td>
+                            <td><strong>1066</strong></td>
+                            <td><strong>95.0%</strong></td>
+                            <td><strong>1358</strong></td>
+                            <td><strong>99.6%</strong></td>
+                            <td><strong>452</strong></td>
+                            <td><strong>99.3%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-EGLP08小组 <span class="badge">12 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-mahmoudmohieldin</td>
+                            <td><strong>341</strong></td>
+                            <td>15</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>94</td>
+                            <td><span class="color-pill scale-high">95.7%</span></td>
+                            <td>147</td>
+                            <td><span class="color-pill scale-low">98.0%</span></td>
+                            <td>85</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-walaamo</td>
+                            <td><strong>192</strong></td>
+                            <td>8</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>65</td>
+                            <td><span class="color-pill scale-medium-low">75.4%</span></td>
+                            <td>66</td>
+                            <td><span class="color-pill scale-medium-low">98.5%</span></td>
+                            <td>53</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-adham</td>
+                            <td><strong>328</strong></td>
+                            <td>24</td>
+                            <td><span class="color-pill scale-high">95.8%</span></td>
+                            <td>112</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>148</td>
+                            <td><span class="color-pill scale-medium-high">99.3%</span></td>
+                            <td>44</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mabdelallah</td>
+                            <td><strong>356</strong></td>
+                            <td>31</td>
+                            <td><span class="color-pill scale-medium-high">93.5%</span></td>
+                            <td>127</td>
+                            <td><span class="color-pill scale-high">96.9%</span></td>
+                            <td>150</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>48</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-nada01</td>
+                            <td><strong>344</strong></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-medium">90.0%</span></td>
+                            <td>113</td>
+                            <td><span class="color-pill scale-high">98.2%</span></td>
+                            <td>167</td>
+                            <td><span class="color-pill scale-medium-high">99.4%</span></td>
+                            <td>44</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-emanabdellatif</td>
+                            <td><strong>145</strong></td>
+                            <td>97</td>
+                            <td><span class="color-pill scale-medium">89.7%</span></td>
+                            <td>5</td>
+                            <td><span class="color-pill scale-very-low">60.0%</span></td>
+                            <td>38</td>
+                            <td><span class="color-pill scale-very-low">97.4%</span></td>
+                            <td>5</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedelshereif</td>
+                            <td><strong>216</strong></td>
+                            <td>38</td>
+                            <td><span class="color-pill scale-medium">89.5%</span></td>
+                            <td>71</td>
+                            <td><span class="color-pill scale-medium-high">93.0%</span></td>
+                            <td>95</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>12</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedmuhammed</td>
+                            <td><strong>346</strong></td>
+                            <td>24</td>
+                            <td><span class="color-pill scale-medium-low">87.5%</span></td>
+                            <td>110</td>
+                            <td><span class="color-pill scale-high">97.3%</span></td>
+                            <td>167</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>45</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nouransameh</td>
+                            <td><strong>309</strong></td>
+                            <td>24</td>
+                            <td><span class="color-pill scale-medium-low">87.5%</span></td>
+                            <td>98</td>
+                            <td><span class="color-pill scale-high">98.0%</span></td>
+                            <td>149</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>38</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedot</td>
+                            <td><strong>314</strong></td>
+                            <td>27</td>
+                            <td><span class="color-pill scale-medium-low">85.2%</span></td>
+                            <td>114</td>
+                            <td><span class="color-pill scale-high">98.2%</span></td>
+                            <td>154</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedsalah</td>
+                            <td><strong>290</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-medium-low">84.2%</span></td>
+                            <td>93</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>135</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>43</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mahmoudragab</td>
+                            <td><strong>344</strong></td>
+                            <td>28</td>
+                            <td><span class="color-pill scale-very-low">75.0%</span></td>
+                            <td>115</td>
+                            <td><span class="color-pill scale-high">98.3%</span></td>
+                            <td>149</td>
+                            <td><span class="color-pill scale-medium-high">99.3%</span></td>
+                            <td>52</td>
+                            <td><span class="color-pill scale-medium">100.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>3525</strong></td>
+                            <td><strong>355</strong></td>
+                            <td><strong>89.0%</strong></td>
+                            <td><strong>1117</strong></td>
+                            <td><strong>96.2%</strong></td>
+                            <td><strong>1565</strong></td>
+                            <td><strong>99.5%</strong></td>
+                            <td><strong>488</strong></td>
+                            <td><strong>100.0%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-EGLP09小组 <span class="badge">13 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-islammohamed</td>
+                            <td><strong>160</strong></td>
+                            <td>8</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>48</td>
+                            <td><span class="color-pill scale-high">91.7%</span></td>
+                            <td>77</td>
+                            <td><span class="color-pill scale-high">97.4%</span></td>
+                            <td>27</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-yossefs</td>
+                            <td><strong>349</strong></td>
+                            <td>21</td>
+                            <td><span class="color-pill scale-high">95.2%</span></td>
+                            <td>99</td>
+                            <td><span class="color-pill scale-high">99.0%</span></td>
+                            <td>145</td>
+                            <td><span class="color-pill scale-high">98.6%</span></td>
+                            <td>84</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51elsayed</td>
+                            <td><strong>350</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-high">94.7%</span></td>
+                            <td>102</td>
+                            <td><span class="color-pill scale-high">97.1%</span></td>
+                            <td>110</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>119</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-maielsayed</td>
+                            <td><strong>340</strong></td>
+                            <td>17</td>
+                            <td><span class="color-pill scale-high">94.1%</span></td>
+                            <td>108</td>
+                            <td><span class="color-pill scale-high">99.1%</span></td>
+                            <td>143</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>72</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nourhanah</td>
+                            <td><strong>335</strong></td>
+                            <td>17</td>
+                            <td><span class="color-pill scale-high">94.1%</span></td>
+                            <td>110</td>
+                            <td><span class="color-pill scale-high">94.5%</span></td>
+                            <td>158</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>50</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-fatimamohammed</td>
+                            <td><strong>189</strong></td>
+                            <td>29</td>
+                            <td><span class="color-pill scale-high">93.1%</span></td>
+                            <td>53</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>80</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>27</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-kerolosrezk</td>
+                            <td><strong>74</strong></td>
+                            <td>56</td>
+                            <td><span class="color-pill scale-high">92.9%</span></td>
+                            <td>2</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>16</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-dianam</td>
+                            <td><strong>320</strong></td>
+                            <td>13</td>
+                            <td><span class="color-pill scale-high">92.3%</span></td>
+                            <td>105</td>
+                            <td><span class="color-pill scale-high">97.1%</span></td>
+                            <td>149</td>
+                            <td><span class="color-pill scale-high">96.6%</span></td>
+                            <td>53</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-noraabdelkhalek</td>
+                            <td><strong>346</strong></td>
+                            <td>22</td>
+                            <td><span class="color-pill scale-high">90.9%</span></td>
+                            <td>111</td>
+                            <td><span class="color-pill scale-high">96.4%</span></td>
+                            <td>134</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>79</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hananhamdy</td>
+                            <td><strong>287</strong></td>
+                            <td>21</td>
+                            <td><span class="color-pill scale-high">90.5%</span></td>
+                            <td>83</td>
+                            <td><span class="color-pill scale-high">95.2%</span></td>
+                            <td>126</td>
+                            <td><span class="color-pill scale-high">97.6%</span></td>
+                            <td>57</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-Shimaa</td>
+                            <td><strong>306</strong></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-high">90.0%</span></td>
+                            <td>98</td>
+                            <td><span class="color-pill scale-high">98.0%</span></td>
+                            <td>129</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>59</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-zeyad</td>
+                            <td><strong>360</strong></td>
+                            <td>17</td>
+                            <td><span class="color-pill scale-high">88.2%</span></td>
+                            <td>115</td>
+                            <td><span class="color-pill scale-high">96.5%</span></td>
+                            <td>137</td>
+                            <td><span class="color-pill scale-high">99.3%</span></td>
+                            <td>91</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-ayam01</td>
+                            <td><strong>1</strong></td>
+                            <td>1</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>3417</strong></td>
+                            <td><strong>261</strong></td>
+                            <td><strong>92.3%</strong></td>
+                            <td><strong>1034</strong></td>
+                            <td><strong>96.9%</strong></td>
+                            <td><strong>1404</strong></td>
+                            <td><strong>99.1%</strong></td>
+                            <td><strong>718</strong></td>
+                            <td><strong>100.0%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-EGLP10小组 <span class="badge">9 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-maisarahfarrag</td>
+                            <td><strong>132</strong></td>
+                            <td>89</td>
+                            <td><span class="color-pill scale-high">98.9%</span></td>
+                            <td>6</td>
+                            <td><span class="color-pill scale-high">83.3%</span></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>5</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedyo</td>
+                            <td><strong>359</strong></td>
+                            <td>22</td>
+                            <td><span class="color-pill scale-high">95.5%</span></td>
+                            <td>129</td>
+                            <td><span class="color-pill scale-high">93.8%</span></td>
+                            <td>165</td>
+                            <td><span class="color-pill scale-high">99.4%</span></td>
+                            <td>43</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hendmoh</td>
+                            <td><strong>255</strong></td>
+                            <td>15</td>
+                            <td><span class="color-pill scale-high">93.3%</span></td>
+                            <td>103</td>
+                            <td><span class="color-pill scale-high">97.1%</span></td>
+                            <td>137</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-assemm</td>
+                            <td><strong>256</strong></td>
+                            <td>11</td>
+                            <td><span class="color-pill scale-high">90.9%</span></td>
+                            <td>92</td>
+                            <td><span class="color-pill scale-high">88.0%</span></td>
+                            <td>121</td>
+                            <td><span class="color-pill scale-high">99.2%</span></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hassanh</td>
+                            <td><strong>305</strong></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-high">85.0%</span></td>
+                            <td>114</td>
+                            <td><span class="color-pill scale-high">92.1%</span></td>
+                            <td>134</td>
+                            <td><span class="color-pill scale-high">97.0%</span></td>
+                            <td>37</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-moimenahmed</td>
+                            <td><strong>280</strong></td>
+                            <td>13</td>
+                            <td><span class="color-pill scale-high">84.6%</span></td>
+                            <td>122</td>
+                            <td><span class="color-pill scale-high">93.4%</span></td>
+                            <td>145</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-sandra</td>
+                            <td><strong>270</strong></td>
+                            <td>18</td>
+                            <td><span class="color-pill scale-high">83.3%</span></td>
+                            <td>91</td>
+                            <td><span class="color-pill scale-high">93.4%</span></td>
+                            <td>141</td>
+                            <td><span class="color-pill scale-high">99.3%</span></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-abdullahessam</td>
+                            <td><strong>210</strong></td>
+                            <td>8</td>
+                            <td><span class="color-pill scale-medium-high">75.0%</span></td>
+                            <td>73</td>
+                            <td><span class="color-pill scale-high">95.9%</span></td>
+                            <td>103</td>
+                            <td><span class="color-pill scale-high">99.0%</span></td>
+                            <td>26</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmwsgaber</td>
+                            <td><strong>1</strong></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>1</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>2068</strong></td>
+                            <td><strong>196</strong></td>
+                            <td><strong>92.9%</strong></td>
+                            <td><strong>730</strong></td>
+                            <td><strong>93.3%</strong></td>
+                            <td><strong>979</strong></td>
+                            <td><strong>99.1%</strong></td>
+                            <td><strong>163</strong></td>
+                            <td><strong>100.0%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>MEAdult-EGLP01小组 <span class="badge">11 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-suhailaabuelmagd</td>
+                            <td><strong>277</strong></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-high">93.9%</span></td>
+                            <td>75</td>
+                            <td><span class="color-pill scale-high">93.3%</span></td>
+                            <td>153</td>
+                            <td><span class="color-pill scale-high">99.3%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-eslammohamed</td>
+                            <td><strong>271</strong></td>
+                            <td>48</td>
+                            <td><span class="color-pill scale-high">93.8%</span></td>
+                            <td>79</td>
+                            <td><span class="color-pill scale-high">94.9%</span></td>
+                            <td>144</td>
+                            <td><span class="color-pill scale-high">98.6%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-saharsaleh</td>
+                            <td><strong>295</strong></td>
+                            <td>59</td>
+                            <td><span class="color-pill scale-high">93.2%</span></td>
+                            <td>82</td>
+                            <td><span class="color-pill scale-high">98.8%</span></td>
+                            <td>154</td>
+                            <td><span class="color-pill scale-high">98.7%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amiraabd</td>
+                            <td><strong>391</strong></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-high">91.8%</span></td>
+                            <td>104</td>
+                            <td><span class="color-pill scale-medium-high">75.0%</span></td>
+                            <td>238</td>
+                            <td><span class="color-pill scale-high">99.2%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-azzasoliman</td>
+                            <td><strong>266</strong></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-high">91.8%</span></td>
+                            <td>83</td>
+                            <td><span class="color-pill scale-high">97.6%</span></td>
+                            <td>134</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-yehiaad</td>
+                            <td><strong>398</strong></td>
+                            <td>31</td>
+                            <td><span class="color-pill scale-high">90.3%</span></td>
+                            <td>124</td>
+                            <td><span class="color-pill scale-high">83.1%</span></td>
+                            <td>243</td>
+                            <td><span class="color-pill scale-high">93.8%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51elbeleidy</td>
+                            <td><strong>354</strong></td>
+                            <td>27</td>
+                            <td><span class="color-pill scale-high">88.9%</span></td>
+                            <td>113</td>
+                            <td><span class="color-pill scale-high">92.0%</span></td>
+                            <td>214</td>
+                            <td><span class="color-pill scale-high">99.5%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ibrahimmag</td>
+                            <td><strong>385</strong></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-high">88.1%</span></td>
+                            <td>131</td>
+                            <td><span class="color-pill scale-medium-high">74.0%</span></td>
+                            <td>212</td>
+                            <td><span class="color-pill scale-medium">50.9%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hassan01</td>
+                            <td><strong>371</strong></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-high">85.7%</span></td>
+                            <td>95</td>
+                            <td><span class="color-pill scale-high">94.7%</span></td>
+                            <td>234</td>
+                            <td><span class="color-pill scale-high">94.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amrwael</td>
+                            <td><strong>178</strong></td>
+                            <td>24</td>
+                            <td><span class="color-pill scale-medium">58.3%</span></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-medium">55.1%</span></td>
+                            <td>105</td>
+                            <td><span class="color-pill scale-high">92.4%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-poulami</td>
+                            <td><strong>1</strong></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>1</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>3187</strong></td>
+                            <td><strong>420</strong></td>
+                            <td><strong>89.3%</strong></td>
+                            <td><strong>936</strong></td>
+                            <td><strong>86.1%</strong></td>
+                            <td><strong>1831</strong></td>
+                            <td><strong>91.9%</strong></td>
+                            <td><strong>0</strong></td>
+                            <td><strong>0.0%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+
+            // Update active button if event exists (user click)
+            if (typeof event !== 'undefined' && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Programmatic call - find and activate the correct button
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    if (btn.textContent.toLowerCase().includes(tabId.replace('-', ' '))) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            // Recalculate heights for newly visible tab
+            setTimeout(function() {
+                document.querySelectorAll('#' + tabId + ' .team-detail-body:not(.collapsed)').forEach(body => {
+                    body.style.maxHeight = body.scrollHeight + 'px';
+                });
+            }, 10);
+        }
+
+        // Check URL hash on load to show specific tab (for screenshots)
+        window.addEventListener('DOMContentLoaded', function() {
+            if (window.location.hash) {
+                const tabId = window.location.hash.substring(1);
+                showTab(tabId);
+            }
+        });
+
+        function showSubTab(group, subTabId) {
+            const groupPrefix = group + '-';
+
+            // Hide all sub-tab contents for this group
+            document.querySelectorAll('[id^="' + groupPrefix + '"]').forEach(content => {
+                if (content.classList.contains('sub-tab-content')) {
+                    content.classList.remove('active');
+                }
+            });
+
+            // Remove active class from all sub-tab buttons in this group's parent container
+            if (typeof event !== 'undefined' && event.target) {
+                const nav = event.target.closest('.sub-tab-nav');
+                if (nav) {
+                    nav.querySelectorAll('.sub-tab-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    event.target.classList.add('active');
+                }
+            }
+
+            // Show the selected sub-tab
+            const targetId = groupPrefix + subTabId;
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.classList.add('active');
+            }
+        }
+
+        function toggleTeam(element) {
+            const header = element;
+            const body = element.nextElementSibling;
+
+            header.classList.toggle('collapsed');
+            body.classList.toggle('collapsed');
+
+            if (!body.classList.contains('collapsed')) {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            }
+        }
+
+        // Initialize team bodies
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial heights for visible tab
+            document.querySelectorAll('.tab-content.active .team-detail-body').forEach(body => {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            });
+        });
+    </script>
 </body>
 </html>

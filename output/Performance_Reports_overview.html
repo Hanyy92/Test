@@ -1,72 +1,2230 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SOP Report Overview</title>
-  <style>
-    :root {
-      color-scheme: light;
-    }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", "Calibri", "Arial", sans-serif;
-      background: #f5f6f8;
-      color: #1b1b1b;
-    }
-    header {
-      background: #1f2937;
-      color: #fff;
-      padding: 16px 20px;
-    }
-    main {
-      padding: 16px 20px 32px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    td, th {
-      border: 1px solid #e5e7eb;
-      padding: 6px 8px;
-      font-size: 12px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    tr:nth-child(even) td {
-      background: #fafafa;
-    }
-    a {
-      color: #0b5fff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .links {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOP Performance Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #1a365d;
+            --primary-foreground: #ffffff;
+            --background: #ffffff;
+            --foreground: #1a365d;
+            --muted: #f4f6f8;
+            --muted-foreground: #64748b;
+            --border: #e2e8f0;
+            --card: #ffffff;
+            --card-foreground: #1a365d;
+            --destructive: #dc2626;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --radius: 0.5rem;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--muted);
+            min-height: 100vh;
+            color: var(--foreground);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            margin-bottom: 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-foreground);
+        }
+
+        .header-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        .header-subtitle {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+        }
+
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--foreground);
+            border-bottom-color: var(--border);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Sub-tab Navigation */
+        .sub-tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--muted);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 16px;
+            margin: -24px -24px 24px -24px;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .sub-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sub-tab-btn:hover {
+            background: rgba(26, 54, 93, 0.1);
+            color: var(--foreground);
+        }
+
+        .sub-tab-btn.active {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .sub-tab-content {
+            display: none;
+        }
+
+        .sub-tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .table-container h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--muted);
+            padding: 16px 12px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--muted-foreground);
+            border-bottom: 1px solid var(--border);
+            white-space: normal;
+            word-wrap: break-word;
+            min-height: 50px;
+            vertical-align: middle;
+        }
+
+        th.left {
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--foreground);
+            text-align: center;
+        }
+
+        td.left {
+            text-align: left;
+        }
+
+        tr:hover {
+            background: var(--muted);
+        }
+
+        .total-row {
+            background: var(--muted) !important;
+            font-weight: 600;
+        }
+
+        /* Performance Badge Pills */
+        .color-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-weight: 500;
+            min-width: 60px;
+            font-size: 13px;
+        }
+
+        .scale-very-low { background: #F8696B; color: #000; }
+        .scale-low { background: #FCAA75; color: #000; }
+        .scale-medium-low { background: #FFEB84; color: #000; }
+        .scale-medium { background: #C6E5B5; color: #000; }
+        .scale-medium-high { background: #9FD899; color: #000; }
+        .scale-high { background: #63BE7B; color: #000; }
+
+        /* Team detail section */
+        .team-detail {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .team-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--muted);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .team-detail-header:hover {
+            background: #e9ecef;
+        }
+
+        .team-detail-header h3 {
+            color: var(--foreground);
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-detail-header .toggle-icon {
+            font-size: 12px;
+            color: var(--muted-foreground);
+            transition: transform 0.2s ease;
+        }
+
+        .team-detail-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .team-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .team-stat {
+            background: var(--primary);
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            text-align: center;
+        }
+
+        .team-stat-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.8);
+            letter-spacing: 0.5px;
+        }
+
+        .team-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-foreground);
+        }
+
+        .team-detail-body {
+            padding: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .team-detail-body.collapsed {
+            max-height: 0 !important;
+            padding: 0;
+        }
+
+        .team-detail-body table {
+            margin: 0;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            margin-left: 8px;
+        }
+
+        /* Timestamp */
+        .timestamp {
+            color: var(--muted-foreground);
+            font-size: 12px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--muted);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: var(--radius);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted-foreground);
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1 style="margin:0;font-size:18px;">SOP Report Overview</h1>
-  </header>
-  <main>
-    <p>Report generated: 2026-01-28 23:35:23</p><div class="links"><div class="card"><a href="Performance_Reports_eglp_teams.html">EG Teams</a></div><div class="card"><a href="Performance_Reports_eglp_ranking.html">EGLP Ranking</a></div><div class="card"><a href="Performance_Reports_eglp_totals.html">EGLP Totals</a></div><div class="card"><a href="Performance_Reports_jolp_teams.html">JOLP Teams</a></div><div class="card"><a href="Performance_Reports_jolp_ranking.html">JOLP Ranking</a></div><div class="card"><a href="Performance_Reports_jolp_totals.html">JOLP Totals</a></div></div>
-  </main>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="header-title">SOP Performance Report</div>
+                    <div class="header-subtitle">Generated: 2026-01-28 12:15:15</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+        <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+        <button class="tab-btn" onclick="showTab('eglp-teams')">EGLP Teams</button>
+        <button class="tab-btn" onclick="showTab('eglp-ranking')">EGLP Ranking</button>
+        <button class="tab-btn" onclick="showTab('eglp-totals')">EGLP Totals</button>
+        <button class="tab-btn" onclick="showTab('jolp-teams')">JOLP Teams</button>
+        <button class="tab-btn" onclick="showTab('jolp-ranking')">JOLP Ranking</button>
+        <button class="tab-btn" onclick="showTab('jolp-totals')">JOLP Totals</button>
+    </nav>
+
+    <div class="container">
+
+    <style>
+        .tab-nav { display: none; }
+        .tab-content { display: block; }
+        .tab-content.active { display: block; }
+        .header { position: static; }
+    </style>
+    
+        <div id="overview" class="tab-content active">
+        <div class="table-container">
+            <nav class="sub-tab-nav">
+                <button class="sub-tab-btn active" onclick="showSubTab('overview', 'totals')">Totals</button>
+                <button class="sub-tab-btn" onclick="showSubTab('overview', 'assessed')">Assessed Data</button>
+            </nav>
+
+            <!-- Totals sub-tab -->
+            <div class="sub-tab-content active" id="overview-totals">
+                <h2 style="margin-bottom: 24px; font-size: 1.5rem; font-weight: 600;">Performance Overview - Combined Totals</h2>
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Grand Totals by Country</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="left" style="width: 120px;">Country</th>
+                        <th>First call</th>
+                        <th>Service warning - absence</th>
+                        <th>Service warning - class interruption</th>
+                        <th>IUR Feedback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="left"><strong>JO</strong></td>
+                        <td><strong>91.7%</strong></td>
+                        <td><strong>94.2%</strong></td>
+                        <td><strong>99.0%</strong></td>
+                        <td><strong>96.6%</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="left"><strong>EG</strong></td>
+                        <td><strong>90.9%</strong></td>
+                        <td><strong>93.1%</strong></td>
+                        <td><strong>96.4%</strong></td>
+                        <td><strong>99.2%</strong></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="left"><strong>MENA</strong></td>
+                        <td><strong>91.3%</strong></td>
+                        <td><strong>93.6%</strong></td>
+                        <td><strong>97.7%</strong></td>
+                        <td><strong>97.9%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-container" style="margin-top: 32px;">
+            <div class="table-header">
+                <h2>JOLP Teams Summary</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="left" style="width: 200px;">Team</th>
+                        <th colspan="2">First call</th>
+                        <th colspan="2">Service warning - absence</th>
+                        <th colspan="2">Service warning - class interruption</th>
+                        <th colspan="2">IUR Feedback</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>Total</th>
+                        <th>Finished</th>
+                        <th>Total</th>
+                        <th>Finished</th>
+                        <th>Total</th>
+                        <th>Finished</th>
+                        <th>Total</th>
+                        <th>Finished</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="left">ME-JOLP02小组</td>
+                        <td>300</td>
+                        <td><span class="color-pill scale-low">91.3%</span></td>
+                        <td>1416</td>
+                        <td><span class="color-pill scale-very-low">90.4%</span></td>
+                        <td>1931</td>
+                        <td><span class="color-pill scale-very-low">96.8%</span></td>
+                        <td>472</td>
+                        <td><span class="color-pill scale-high">87.9%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-JOLP03小组</td>
+                        <td>256</td>
+                        <td><span class="color-pill scale-very-low">91.0%</span></td>
+                        <td>1330</td>
+                        <td><span class="color-pill scale-high">96.3%</span></td>
+                        <td>1943</td>
+                        <td><span class="color-pill scale-high">99.8%</span></td>
+                        <td>528</td>
+                        <td><span class="color-pill scale-high">100.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-JOLP04小组</td>
+                        <td>237</td>
+                        <td><span class="color-pill scale-medium-low">91.6%</span></td>
+                        <td>769</td>
+                        <td><span class="color-pill scale-low">92.3%</span></td>
+                        <td>1268</td>
+                        <td><span class="color-pill scale-medium-high">99.3%</span></td>
+                        <td>393</td>
+                        <td><span class="color-pill scale-high">98.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-JOLP06小组</td>
+                        <td>376</td>
+                        <td><span class="color-pill scale-low">91.5%</span></td>
+                        <td>1090</td>
+                        <td><span class="color-pill scale-medium-high">94.7%</span></td>
+                        <td>1505</td>
+                        <td><span class="color-pill scale-high">99.3%</span></td>
+                        <td>366</td>
+                        <td><span class="color-pill scale-high">98.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-JOLP08小组</td>
+                        <td>517</td>
+                        <td><span class="color-pill scale-high">92.5%</span></td>
+                        <td>1129</td>
+                        <td><span class="color-pill scale-high">96.1%</span></td>
+                        <td>1844</td>
+                        <td><span class="color-pill scale-high">99.4%</span></td>
+                        <td>481</td>
+                        <td><span class="color-pill scale-high">98.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">MEAdult-JOLP01小组</td>
+                        <td>344</td>
+                        <td><span class="color-pill scale-medium-high">92.2%</span></td>
+                        <td>776</td>
+                        <td><span class="color-pill scale-medium-high">95.1%</span></td>
+                        <td>1363</td>
+                        <td><span class="color-pill scale-high">99.5%</span></td>
+                        <td>0</td>
+                        <td><span class="color-pill scale-very-low">0.0%</span></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="left"><strong>Total</strong></td>
+                        <td><strong>2030</strong></td>
+                        <td><strong>91.7%</strong></td>
+                        <td><strong>6510</strong></td>
+                        <td><strong>94.2%</strong></td>
+                        <td><strong>9854</strong></td>
+                        <td><strong>99.0%</strong></td>
+                        <td><strong>2240</strong></td>
+                        <td><strong>80.5%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-container" style="margin-top: 32px;">
+            <div class="table-header">
+                <h2>EGLP Teams Summary</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="left" style="width: 200px;">Team</th>
+                        <th colspan="2">First call</th>
+                        <th colspan="2">Service warning - absence</th>
+                        <th colspan="2">Service warning - class interruption</th>
+                        <th colspan="2">IUR Feedback</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>Total</th>
+                        <th>Finished</th>
+                        <th>Total</th>
+                        <th>Finished</th>
+                        <th>Total</th>
+                        <th>Finished</th>
+                        <th>Total</th>
+                        <th>Finished</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="left">ME-EGLP-GCC01小组</td>
+                        <td>786</td>
+                        <td><span class="color-pill scale-medium-high">92.4%</span></td>
+                        <td>1867</td>
+                        <td><span class="color-pill scale-medium">91.5%</span></td>
+                        <td>1934</td>
+                        <td><span class="color-pill scale-very-low">92.3%</span></td>
+                        <td>711</td>
+                        <td><span class="color-pill scale-high">98.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP01小组</td>
+                        <td>432</td>
+                        <td><span class="color-pill scale-very-low">87.5%</span></td>
+                        <td>2086</td>
+                        <td><span class="color-pill scale-medium-high">93.5%</span></td>
+                        <td>2866</td>
+                        <td><span class="color-pill scale-high">99.0%</span></td>
+                        <td>859</td>
+                        <td><span class="color-pill scale-high">99.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP02小组</td>
+                        <td>549</td>
+                        <td><span class="color-pill scale-low">89.4%</span></td>
+                        <td>1095</td>
+                        <td><span class="color-pill scale-medium-low">91.3%</span></td>
+                        <td>1696</td>
+                        <td><span class="color-pill scale-very-low">92.6%</span></td>
+                        <td>397</td>
+                        <td><span class="color-pill scale-high">99.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP03小组</td>
+                        <td>684</td>
+                        <td><span class="color-pill scale-medium-high">92.0%</span></td>
+                        <td>1224</td>
+                        <td><span class="color-pill scale-medium">93.0%</span></td>
+                        <td>1862</td>
+                        <td><span class="color-pill scale-medium-high">97.2%</span></td>
+                        <td>576</td>
+                        <td><span class="color-pill scale-high">98.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP04小组</td>
+                        <td>448</td>
+                        <td><span class="color-pill scale-medium">90.8%</span></td>
+                        <td>1149</td>
+                        <td><span class="color-pill scale-medium-high">93.5%</span></td>
+                        <td>1732</td>
+                        <td><span class="color-pill scale-medium">96.1%</span></td>
+                        <td>465</td>
+                        <td><span class="color-pill scale-high">98.5%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP05小组</td>
+                        <td>254</td>
+                        <td><span class="color-pill scale-medium">90.9%</span></td>
+                        <td>802</td>
+                        <td><span class="color-pill scale-high">96.1%</span></td>
+                        <td>1149</td>
+                        <td><span class="color-pill scale-high">98.6%</span></td>
+                        <td>255</td>
+                        <td><span class="color-pill scale-high">100.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP06小组</td>
+                        <td>371</td>
+                        <td><span class="color-pill scale-medium-low">90.3%</span></td>
+                        <td>999</td>
+                        <td><span class="color-pill scale-medium-low">90.6%</span></td>
+                        <td>1516</td>
+                        <td><span class="color-pill scale-very-low">91.8%</span></td>
+                        <td>483</td>
+                        <td><span class="color-pill scale-high">98.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP07小组</td>
+                        <td>219</td>
+                        <td><span class="color-pill scale-high">93.6%</span></td>
+                        <td>1066</td>
+                        <td><span class="color-pill scale-medium-high">95.0%</span></td>
+                        <td>1358</td>
+                        <td><span class="color-pill scale-high">99.6%</span></td>
+                        <td>452</td>
+                        <td><span class="color-pill scale-high">99.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP08小组</td>
+                        <td>355</td>
+                        <td><span class="color-pill scale-low">89.0%</span></td>
+                        <td>1117</td>
+                        <td><span class="color-pill scale-high">96.2%</span></td>
+                        <td>1565</td>
+                        <td><span class="color-pill scale-high">99.5%</span></td>
+                        <td>488</td>
+                        <td><span class="color-pill scale-high">100.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP09小组</td>
+                        <td>261</td>
+                        <td><span class="color-pill scale-medium-high">92.3%</span></td>
+                        <td>1034</td>
+                        <td><span class="color-pill scale-high">96.9%</span></td>
+                        <td>1404</td>
+                        <td><span class="color-pill scale-high">99.1%</span></td>
+                        <td>718</td>
+                        <td><span class="color-pill scale-high">100.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">ME-EGLP10小组</td>
+                        <td>196</td>
+                        <td><span class="color-pill scale-high">92.9%</span></td>
+                        <td>730</td>
+                        <td><span class="color-pill scale-medium">93.3%</span></td>
+                        <td>979</td>
+                        <td><span class="color-pill scale-high">99.1%</span></td>
+                        <td>163</td>
+                        <td><span class="color-pill scale-high">100.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td class="left">MEAdult-EGLP01小组</td>
+                        <td>420</td>
+                        <td><span class="color-pill scale-low">89.3%</span></td>
+                        <td>936</td>
+                        <td><span class="color-pill scale-very-low">86.1%</span></td>
+                        <td>1831</td>
+                        <td><span class="color-pill scale-very-low">91.9%</span></td>
+                        <td>0</td>
+                        <td><span class="color-pill scale-very-low">0.0%</span></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="left"><strong>Total</strong></td>
+                        <td><strong>4975</strong></td>
+                        <td><strong>90.9%</strong></td>
+                        <td><strong>14105</strong></td>
+                        <td><strong>93.1%</strong></td>
+                        <td><strong>19892</strong></td>
+                        <td><strong>96.4%</strong></td>
+                        <td><strong>5567</strong></td>
+                        <td><strong>90.9%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+            </div>
+            <!-- Assessed Data sub-tab -->
+            <div class="sub-tab-content" id="overview-assessed">
+        <nav class="sub-tab-nav">
+            <button class="sub-tab-btn active" onclick="showSubTab('assessed', 'eglp')">EGLP</button>
+            <button class="sub-tab-btn" onclick="showSubTab('assessed', 'jolp')">JOLP</button>
+        </nav>
+
+        <!-- EGLP Assessed Data sub-tab -->
+        <div class="sub-tab-content active" id="assessed-eglp">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-EGLP-GCC01小组 <span class="badge">22 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51abdelrahman</td>
+                            <td>94.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-OmarM</td>
+                            <td>96.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-abdallah01</td>
+                            <td>94.8%</td>
+                            <td>95.3%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ssabry</td>
+                            <td>95.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-omnia01</td>
+                            <td>96.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-moustafaa</td>
+                            <td>96.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mohamedibrahim</td>
+                            <td>99.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mmahmoud</td>
+                            <td>98.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mennaalla</td>
+                            <td>83.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-lubnamohamed</td>
+                            <td>94.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-imang</td>
+                            <td>95.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-halla</td>
+                            <td>61.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-habibamahmoud</td>
+                            <td>93.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-gannam</td>
+                            <td>80.4%</td>
+                            <td>70.7%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-fatimagouda</td>
+                            <td>93.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-farghaly</td>
+                            <td>96.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-fabdelaziz</td>
+                            <td>89.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-esraaahmed</td>
+                            <td>93.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-eslammasoud</td>
+                            <td>95.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmednabil</td>
+                            <td>95.4%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedmoham</td>
+                            <td>97.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-hady</td>
+                            <td>89.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-EGLP01小组 <span class="badge">21 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51remonda</td>
+                            <td>0.0%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nawaraa</td>
+                            <td>97.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-shams</td>
+                            <td>96.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-radwa</td>
+                            <td>90.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-mai01</td>
+                            <td>97.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-aaya</td>
+                            <td>97.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-Lobna</td>
+                            <td>97.9%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-youssefyasser</td>
+                            <td>98.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-rehababdelreheem</td>
+                            <td>94.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nourhanahm</td>
+                            <td>96.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-kkhalil</td>
+                            <td>96.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-aliam</td>
+                            <td>96.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hagarh</td>
+                            <td>88.0%</td>
+                            <td>93.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hadeerha</td>
+                            <td>96.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-habdelaziz</td>
+                            <td>97.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-enasa</td>
+                            <td>96.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-begada</td>
+                            <td>98.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amrom</td>
+                            <td>97.4%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amira</td>
+                            <td>97.0%</td>
+                            <td>98.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amalyossef</td>
+                            <td>93.9%</td>
+                            <td>89.1%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-yara</td>
+                            <td>97.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-EGLP02小组 <span class="badge">11 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51abdelfattah01</td>
+                            <td>89.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">51ahmed03</td>
+                            <td>96.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedamrali</td>
+                            <td>87.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-fathyabdelati</td>
+                            <td>96.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hamedem</td>
+                            <td>77.6%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hossam01</td>
+                            <td>97.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-imansayed</td>
+                            <td>95.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mahmoudismail</td>
+                            <td>97.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-osamasalah</td>
+                            <td>95.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-passantahmed</td>
+                            <td>79.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-wafaa</td>
+                            <td>93.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-EGLP03小组 <span class="badge">13 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51mostafa</td>
+                            <td>94.8%</td>
+                            <td>95.9%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">51samy</td>
+                            <td>97.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-abdelrahmanmansour</td>
+                            <td>96.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-aminabdelsatar</td>
+                            <td>97.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ayaam</td>
+                            <td>92.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-esraamahmoud</td>
+                            <td>93.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ibrahimalbaghdadi</td>
+                            <td>98.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mahmoudmo</td>
+                            <td>88.5%</td>
+                            <td>88.9%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mahmoudsamy</td>
+                            <td>96.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nadaelneklawy</td>
+                            <td>95.7%</td>
+                            <td>83.3%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-passantga</td>
+                            <td>97.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-seifeldeen</td>
+                            <td>98.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-ABDULRAHMAN</td>
+                            <td>84.6%</td>
+                            <td>93.2%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-EGLP04小组 <span class="badge">14 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51abdellatif01</td>
+                            <td>68.3%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">51ahmed</td>
+                            <td>93.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">51mohamed01</td>
+                            <td>96.3%</td>
+                            <td>95.2%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedmoha</td>
+                            <td>95.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedn</td>
+                            <td>98.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedt</td>
+                            <td>93.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amala</td>
+                            <td>0.0%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ibrahemharidy</td>
+                            <td>95.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mohamed05</td>
+                            <td>96.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-saraht</td>
+                            <td>98.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-K. Ashraf</td>
+                            <td>92.2%</td>
+                            <td>89.4%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-hager</td>
+                            <td>99.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-hatem</td>
+                            <td>95.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-sameh</td>
+                            <td>95.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-EGLP05小组 <span class="badge">9 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-abdelrhmanbaher</td>
+                            <td>98.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-basmamohamed</td>
+                            <td>93.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-bassem</td>
+                            <td>95.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-gehanibrahim</td>
+                            <td>97.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mohamed06</td>
+                            <td>97.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-noha</td>
+                            <td>98.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-shahdmahmoud</td>
+                            <td>94.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-shrouqhaddad</td>
+                            <td>97.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-yasmin01</td>
+                            <td>97.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-EGLP06小组 <span class="badge">11 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51khaled03</td>
+                            <td>92.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-abdelaziznaser</td>
+                            <td>97.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amrhassan</td>
+                            <td>95.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-esraaba</td>
+                            <td>98.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-habdelal</td>
+                            <td>84.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-habibamourad</td>
+                            <td>94.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nermeen</td>
+                            <td>81.3%</td>
+                            <td>87.9%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-sherifa</td>
+                            <td>67.4%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-rana01</td>
+                            <td>93.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-sarraa</td>
+                            <td>97.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-yousef</td>
+                            <td>91.1%</td>
+                            <td>95.6%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-EGLP07小组 <span class="badge">12 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-ahmedad</td>
+                            <td>91.4%</td>
+                            <td>84.2%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedal</td>
+                            <td>98.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedmohs</td>
+                            <td>99.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-dohakhater</td>
+                            <td>99.4%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hussienabdelhamid</td>
+                            <td>98.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-manarsamy</td>
+                            <td>98.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-marwan01</td>
+                            <td>0.0%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mohamedabdelazize</td>
+                            <td>97.4%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mohamedahmed</td>
+                            <td>95.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-shady</td>
+                            <td>97.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-mokhtar</td>
+                            <td>97.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-yasmin</td>
+                            <td>94.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-EGLP08小组 <span class="badge">12 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-ahmedelshereif</td>
+                            <td>95.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedmuhammed</td>
+                            <td>98.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedot</td>
+                            <td>98.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedsalah</td>
+                            <td>98.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-emanabdellatif</td>
+                            <td>90.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mabdelallah</td>
+                            <td>98.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mahmoudmohieldin</td>
+                            <td>97.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-mahmoudragab</td>
+                            <td>96.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nouransameh</td>
+                            <td>98.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-walaamo</td>
+                            <td>87.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-adham</td>
+                            <td>99.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-nada01</td>
+                            <td>98.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-EGLP09小组 <span class="badge">13 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51elsayed</td>
+                            <td>98.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-dianam</td>
+                            <td>96.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-fatimamohammed</td>
+                            <td>98.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hananhamdy</td>
+                            <td>96.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-islammohamed</td>
+                            <td>95.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-kerolosrezk</td>
+                            <td>94.6%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-maielsayed</td>
+                            <td>99.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-noraabdelkhalek</td>
+                            <td>97.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-nourhanah</td>
+                            <td>97.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-yossefs</td>
+                            <td>98.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-zeyad</td>
+                            <td>97.4%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-Shimaa</td>
+                            <td>98.4%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGSS-ayam01</td>
+                            <td>0.0%</td>
+                            <td>0.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-EGLP10小组 <span class="badge">9 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">EGLP-abdullahessam</td>
+                            <td>96.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmedyo</td>
+                            <td>96.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ahmwsgaber</td>
+                            <td>0.0%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-assemm</td>
+                            <td>94.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hassanh</td>
+                            <td>94.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hendmoh</td>
+                            <td>98.4%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-maisarahfarrag</td>
+                            <td>98.4%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-moimenahmed</td>
+                            <td>96.4%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-sandra</td>
+                            <td>96.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>MEAdult-EGLP01小组 <span class="badge">11 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51elbeleidy</td>
+                            <td>96.3%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amiraabd</td>
+                            <td>91.8%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-amrwael</td>
+                            <td>77.5%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-azzasoliman</td>
+                            <td>97.7%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-eslammohamed</td>
+                            <td>96.7%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-hassan01</td>
+                            <td>93.3%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-ibrahimmag</td>
+                            <td>62.9%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-poulami</td>
+                            <td>0.0%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-saharsaleh</td>
+                            <td>97.6%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-suhailaabuelmagd</td>
+                            <td>96.8%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">EGLP-yehiaad</td>
+                            <td>90.2%</td>
+                            <td>0.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- JOLP Assessed Data sub-tab -->
+        <div class="sub-tab-content" id="assessed-jolp">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-JOLP02小组 <span class="badge">12 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51thyabat</td>
+                            <td>82.7%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-ayahammad</td>
+                            <td>96.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-fatensbaih</td>
+                            <td>97.2%</td>
+                            <td>67.3%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-ibrahimkarera</td>
+                            <td>79.7%</td>
+                            <td>75.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-laialiabid</td>
+                            <td>90.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-raghadaburashideh</td>
+                            <td>94.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-razanalkhateeb</td>
+                            <td>98.7%</td>
+                            <td>80.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-yousefabutouk</td>
+                            <td>92.4%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-Nassar</td>
+                            <td>96.9%</td>
+                            <td>96.8%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-abdalazizabsi</td>
+                            <td>97.4%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-alkhalaileh01</td>
+                            <td>95.0%</td>
+                            <td>91.3%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-saraqrarah</td>
+                            <td>97.9%</td>
+                            <td>69.6%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-JOLP03小组 <span class="badge">12 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51alheet</td>
+                            <td>97.4%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">51khalaf</td>
+                            <td>97.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">51obaidat</td>
+                            <td>99.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">51shahin</td>
+                            <td>98.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-alanoudalsarkhi</td>
+                            <td>97.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-rahafalmasri</td>
+                            <td>98.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-rahafsalem</td>
+                            <td>96.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-suadalaghwani</td>
+                            <td>97.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-yaraaburahma</td>
+                            <td>97.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-Dana</td>
+                            <td>99.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-Musa</td>
+                            <td>97.5%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-manal</td>
+                            <td>97.9%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-JOLP04小组 <span class="badge">7 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">JOSS-Besan</td>
+                            <td>95.4%</td>
+                            <td>95.9%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-Refai</td>
+                            <td>96.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-hebahussaini</td>
+                            <td>95.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-lumasalhab</td>
+                            <td>96.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-nadamakahleh</td>
+                            <td>97.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-rahafsalah</td>
+                            <td>97.4%</td>
+                            <td>95.7%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-shahedomari</td>
+                            <td>94.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-JOLP06小组 <span class="badge">9 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51hebamahmoud</td>
+                            <td>97.5%</td>
+                            <td>96.9%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">51matar</td>
+                            <td>94.7%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-amwajmisk</td>
+                            <td>97.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-mohammedghanem</td>
+                            <td>94.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-omaralhajhasan</td>
+                            <td>97.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-alaamoh</td>
+                            <td>97.3%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-alarouryruba</td>
+                            <td>96.8%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-ayanabaheen</td>
+                            <td>98.0%</td>
+                            <td>85.7%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-razanatieh</td>
+                            <td>95.6%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>ME-JOLP08小组 <span class="badge">10 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51aseelabulsondos</td>
+                            <td>96.0%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-ahmadamaireh</td>
+                            <td>96.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-ahmadatout</td>
+                            <td>97.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-anasshahin</td>
+                            <td>97.9%</td>
+                            <td>98.9%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-saraotaili</td>
+                            <td>97.7%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-tasneemderbas</td>
+                            <td>96.0%</td>
+                            <td>90.5%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-ayamaharmeh</td>
+                            <td>98.7%</td>
+                            <td>95.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-ghosoun</td>
+                            <td>97.1%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-marwamelhem</td>
+                            <td>98.5%</td>
+                            <td>100.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-randjaber</td>
+                            <td>97.2%</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>MEAdult-JOLP01小组 <span class="badge">6 agents</span></h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 200px;">Agent</th>
+                            <th style="width: 200px;">SOP (First call, Absence, Interruption)</th>
+                            <th style="width: 120px;">IUR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51alshami</td>
+                            <td>96.4%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">51alshyeb</td>
+                            <td>97.0%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">51salloum</td>
+                            <td>98.7%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-maenalqudah</td>
+                            <td>96.1%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-alanagra</td>
+                            <td>97.8%</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-shahed</td>
+                            <td>96.7%</td>
+                            <td>0.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+
+            // Update active button if event exists (user click)
+            if (typeof event !== 'undefined' && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Programmatic call - find and activate the correct button
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    if (btn.textContent.toLowerCase().includes(tabId.replace('-', ' '))) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            // Recalculate heights for newly visible tab
+            setTimeout(function() {
+                document.querySelectorAll('#' + tabId + ' .team-detail-body:not(.collapsed)').forEach(body => {
+                    body.style.maxHeight = body.scrollHeight + 'px';
+                });
+            }, 10);
+        }
+
+        // Check URL hash on load to show specific tab (for screenshots)
+        window.addEventListener('DOMContentLoaded', function() {
+            if (window.location.hash) {
+                const tabId = window.location.hash.substring(1);
+                showTab(tabId);
+            }
+        });
+
+        function showSubTab(group, subTabId) {
+            const groupPrefix = group + '-';
+
+            // Hide all sub-tab contents for this group
+            document.querySelectorAll('[id^="' + groupPrefix + '"]').forEach(content => {
+                if (content.classList.contains('sub-tab-content')) {
+                    content.classList.remove('active');
+                }
+            });
+
+            // Remove active class from all sub-tab buttons in this group's parent container
+            if (typeof event !== 'undefined' && event.target) {
+                const nav = event.target.closest('.sub-tab-nav');
+                if (nav) {
+                    nav.querySelectorAll('.sub-tab-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    event.target.classList.add('active');
+                }
+            }
+
+            // Show the selected sub-tab
+            const targetId = groupPrefix + subTabId;
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.classList.add('active');
+            }
+        }
+
+        function toggleTeam(element) {
+            const header = element;
+            const body = element.nextElementSibling;
+
+            header.classList.toggle('collapsed');
+            body.classList.toggle('collapsed');
+
+            if (!body.classList.contains('collapsed')) {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            }
+        }
+
+        // Initialize team bodies
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial heights for visible tab
+            document.querySelectorAll('.tab-content.active .team-detail-body').forEach(body => {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            });
+        });
+    </script>
 </body>
 </html>

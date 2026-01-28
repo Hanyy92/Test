@@ -1,72 +1,1429 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>JOLP Teams</title>
-  <style>
-    :root {
-      color-scheme: light;
-    }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", "Calibri", "Arial", sans-serif;
-      background: #f5f6f8;
-      color: #1b1b1b;
-    }
-    header {
-      background: #1f2937;
-      color: #fff;
-      padding: 16px 20px;
-    }
-    main {
-      padding: 16px 20px 32px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    td, th {
-      border: 1px solid #e5e7eb;
-      padding: 6px 8px;
-      font-size: 12px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    tr:nth-child(even) td {
-      background: #fafafa;
-    }
-    a {
-      color: #0b5fff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .links {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOP Performance Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #1a365d;
+            --primary-foreground: #ffffff;
+            --background: #ffffff;
+            --foreground: #1a365d;
+            --muted: #f4f6f8;
+            --muted-foreground: #64748b;
+            --border: #e2e8f0;
+            --card: #ffffff;
+            --card-foreground: #1a365d;
+            --destructive: #dc2626;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --radius: 0.5rem;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--muted);
+            min-height: 100vh;
+            color: var(--foreground);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            margin-bottom: 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-foreground);
+        }
+
+        .header-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        .header-subtitle {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+        }
+
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--foreground);
+            border-bottom-color: var(--border);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Sub-tab Navigation */
+        .sub-tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--muted);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 16px;
+            margin: -24px -24px 24px -24px;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .sub-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sub-tab-btn:hover {
+            background: rgba(26, 54, 93, 0.1);
+            color: var(--foreground);
+        }
+
+        .sub-tab-btn.active {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .sub-tab-content {
+            display: none;
+        }
+
+        .sub-tab-content.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .table-container h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--muted);
+            padding: 16px 12px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--muted-foreground);
+            border-bottom: 1px solid var(--border);
+            white-space: normal;
+            word-wrap: break-word;
+            min-height: 50px;
+            vertical-align: middle;
+        }
+
+        th.left {
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--foreground);
+            text-align: center;
+        }
+
+        td.left {
+            text-align: left;
+        }
+
+        tr:hover {
+            background: var(--muted);
+        }
+
+        .total-row {
+            background: var(--muted) !important;
+            font-weight: 600;
+        }
+
+        /* Performance Badge Pills */
+        .color-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-weight: 500;
+            min-width: 60px;
+            font-size: 13px;
+        }
+
+        .scale-very-low { background: #F8696B; color: #000; }
+        .scale-low { background: #FCAA75; color: #000; }
+        .scale-medium-low { background: #FFEB84; color: #000; }
+        .scale-medium { background: #C6E5B5; color: #000; }
+        .scale-medium-high { background: #9FD899; color: #000; }
+        .scale-high { background: #63BE7B; color: #000; }
+
+        /* Team detail section */
+        .team-detail {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .team-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--muted);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .team-detail-header:hover {
+            background: #e9ecef;
+        }
+
+        .team-detail-header h3 {
+            color: var(--foreground);
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-detail-header .toggle-icon {
+            font-size: 12px;
+            color: var(--muted-foreground);
+            transition: transform 0.2s ease;
+        }
+
+        .team-detail-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .team-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .team-stat {
+            background: var(--primary);
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            text-align: center;
+        }
+
+        .team-stat-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.8);
+            letter-spacing: 0.5px;
+        }
+
+        .team-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-foreground);
+        }
+
+        .team-detail-body {
+            padding: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .team-detail-body.collapsed {
+            max-height: 0 !important;
+            padding: 0;
+        }
+
+        .team-detail-body table {
+            margin: 0;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            margin-left: 8px;
+        }
+
+        /* Timestamp */
+        .timestamp {
+            color: var(--muted-foreground);
+            font-size: 12px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--muted);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: var(--radius);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted-foreground);
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1 style="margin:0;font-size:18px;">JOLP Teams</h1>
-  </header>
-  <main>
-    <table><tr><td>SOP Report - JOLP Teams</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-JOLP02小组</td><td>51thyabat</td><td>14</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>83</td><td>0.6385542168674698</td><td>0</td><td>111</td><td>0.9459459459459459</td><td>0</td></tr><tr><td></td><td>JOLP-raghadaburashideh</td><td>24</td><td>1</td><td>0</td><td>47</td><td>1</td><td>0</td><td>93</td><td>0.8817204301075269</td><td>0.05376344086021505</td><td>147</td><td>0.9795918367346939</td><td>0</td></tr><tr><td></td><td>JOLP-fatensbaih</td><td>39</td><td>0.9743589743589743</td><td>0</td><td>49</td><td>0.673469387755102</td><td>0</td><td>134</td><td>0.9402985074626866</td><td>0</td><td>183</td><td>0.994535519125683</td><td>0</td></tr><tr><td></td><td>JOLP-ayahammad</td><td>32</td><td>0.96875</td><td>0</td><td>44</td><td>1</td><td>0</td><td>128</td><td>0.9140625</td><td>0</td><td>191</td><td>0.9947643979057592</td><td>0</td></tr><tr><td></td><td>JOLP-ibrahimkarera</td><td>22</td><td>0.9545454545454546</td><td>0</td><td>20</td><td>0.75</td><td>0</td><td>109</td><td>0.8807339449541285</td><td>0</td><td>125</td><td>0.696</td><td>0</td></tr><tr><td></td><td>JOLP-razanalkhateeb</td><td>19</td><td>0.9473684210526315</td><td>0</td><td>67</td><td>0.8059701492537313</td><td>0</td><td>133</td><td>0.9774436090225563</td><td>0</td><td>154</td><td>1</td><td>0</td></tr><tr><td></td><td>JOSS-Nassar</td><td>30</td><td>0.9333333333333333</td><td>0</td><td>63</td><td>0.9682539682539683</td><td>0</td><td>115</td><td>0.9391304347826087</td><td>0.008695652173913044</td><td>176</td><td>0.9943181818181818</td><td>0</td></tr><tr><td></td><td>JOLP-laialiabid</td><td>19</td><td>0.8947368421052632</td><td>0</td><td>13</td><td>1</td><td>0</td><td>137</td><td>0.8102189781021898</td><td>0.072992700729927</td><td>165</td><td>0.9878787878787879</td><td>0</td></tr><tr><td></td><td>JOSS-alkhalaileh01</td><td>26</td><td>0.8846153846153846</td><td>0</td><td>46</td><td>0.9130434782608695</td><td>0</td><td>125</td><td>0.952</td><td>0</td><td>167</td><td>0.9580838323353293</td><td>0</td></tr><tr><td></td><td>JOSS-saraqrarah</td><td>22</td><td>0.8636363636363636</td><td>0</td><td>56</td><td>0.6964285714285714</td><td>0</td><td>145</td><td>0.9724137931034482</td><td>0</td><td>171</td><td>1</td><td>0</td></tr><tr><td></td><td>JOLP-yousefabutouk</td><td>25</td><td>0.84</td><td>0</td><td>42</td><td>1</td><td>0</td><td>106</td><td>0.839622641509434</td><td>0.160377358490566</td><td>173</td><td>0.9884393063583815</td><td>0</td></tr><tr><td></td><td>JOSS-abdalazizabsi</td><td>28</td><td>0.7142857142857143</td><td>0</td><td>25</td><td>1</td><td>0</td><td>108</td><td>1</td><td>0</td><td>168</td><td>1</td><td>0</td></tr><tr><td></td><td>ME-JOLP02小组</td><td>300</td><td>0.9133333333333333</td><td>0</td><td>472</td><td>0.8792372881355932</td><td>0</td><td>1416</td><td>0.903954802259887</td><td>0.02330508474576271</td><td>1931</td><td>0.9684101501812532</td><td>0</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-JOLP03小组</td><td>51obaidat</td><td>14</td><td>1</td><td>0</td><td>41</td><td>1</td><td>0</td><td>94</td><td>0.9893617021276596</td><td>0</td><td>178</td><td>1</td><td>0</td></tr><tr><td></td><td>JOSS-Dana</td><td>19</td><td>1</td><td>0</td><td>66</td><td>1</td><td>0</td><td>120</td><td>0.9833333333333333</td><td>0</td><td>143</td><td>1</td><td>0</td></tr><tr><td></td><td>JOSS-manal</td><td>27</td><td>1</td><td>0</td><td>58</td><td>1</td><td>0</td><td>126</td><td>0.9523809523809523</td><td>0</td><td>185</td><td>0.9945945945945946</td><td>0</td></tr><tr><td></td><td>JOLP-alanoudalsarkhi</td><td>30</td><td>0.9666666666666667</td><td>0</td><td>44</td><td>1</td><td>0</td><td>134</td><td>0.9552238805970149</td><td>0</td><td>159</td><td>1</td><td>0</td></tr><tr><td></td><td>JOSS-Musa</td><td>14</td><td>0.9285714285714286</td><td>0</td><td>0</td><td>0</td><td>0</td><td>58</td><td>0.9482758620689655</td><td>0</td><td>91</td><td>1</td><td>0</td></tr><tr><td></td><td>51alheet</td><td>19</td><td>0.8947368421052632</td><td>0</td><td>42</td><td>1</td><td>0</td><td>112</td><td>0.9464285714285714</td><td>0</td><td>173</td><td>1</td><td>0</td></tr><tr><td></td><td>51shahin</td><td>19</td><td>0.8947368421052632</td><td>0</td><td>39</td><td>1</td><td>0</td><td>117</td><td>0.9658119658119658</td><td>0</td><td>183</td><td>1</td><td>0</td></tr><tr><td></td><td>JOLP-yaraaburahma</td><td>41</td><td>0.8780487804878049</td><td>0</td><td>47</td><td>1</td><td>0</td><td>125</td><td>0.968</td><td>0</td><td>163</td><td>1</td><td>0</td></tr><tr><td></td><td>JOLP-rahafalmasri</td><td>16</td><td>0.875</td><td>0</td><td>59</td><td>1</td><td>0</td><td>111</td><td>0.9819819819819819</td><td>0</td><td>160</td><td>1</td><td>0</td></tr><tr><td></td><td>JOLP-rahafsalem</td><td>19</td><td>0.8421052631578947</td><td>0</td><td>42</td><td>1</td><td>0</td><td>76</td><td>0.9473684210526315</td><td>0</td><td>150</td><td>0.9933333333333333</td><td>0</td></tr><tr><td></td><td>JOLP-suadalaghwani</td><td>24</td><td>0.8333333333333334</td><td>0</td><td>39</td><td>1</td><td>0</td><td>126</td><td>0.9682539682539683</td><td>0</td><td>169</td><td>0.9940828402366864</td><td>0</td></tr><tr><td></td><td>51khalaf</td><td>14</td><td>0.7857142857142857</td><td>0</td><td>51</td><td>1</td><td>0</td><td>131</td><td>0.9465648854961832</td><td>0</td><td>189</td><td>1</td><td>0</td></tr><tr><td></td><td>ME-JOLP03小组</td><td>256</td><td>0.91015625</td><td>0</td><td>528</td><td>1</td><td>0</td><td>1330</td><td>0.9631578947368421</td><td>0</td><td>1943</td><td>0.9984559958826557</td><td>0</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-JOLP04小组</td><td>JOSS-Refai</td><td>33</td><td>0.9393939393939394</td><td>0</td><td>57</td><td>1</td><td>0</td><td>123</td><td>0.943089430894309</td><td>0</td><td>197</td><td>0.9847715736040609</td><td>0</td></tr><tr><td></td><td>JOSS-lumasalhab</td><td>42</td><td>0.9285714285714286</td><td>0</td><td>74</td><td>1</td><td>0</td><td>96</td><td>0.9375</td><td>0</td><td>181</td><td>0.9834254143646409</td><td>0</td></tr><tr><td></td><td>JOSS-shahedomari</td><td>39</td><td>0.9230769230769231</td><td>0</td><td>67</td><td>1</td><td>0</td><td>109</td><td>0.8623853211009175</td><td>0.1009174311926606</td><td>154</td><td>1</td><td>0</td></tr><tr><td></td><td>JOSS-nadamakahleh</td><td>25</td><td>0.92</td><td>0</td><td>46</td><td>1</td><td>0</td><td>108</td><td>0.9444444444444444</td><td>0</td><td>203</td><td>0.9950738916256158</td><td>0</td></tr><tr><td></td><td>JOSS-rahafsalah</td><td>35</td><td>0.9142857142857143</td><td>0</td><td>70</td><td>0.9571428571428572</td><td>0</td><td>107</td><td>0.9439252336448598</td><td>0</td><td>200</td><td>1</td><td>0</td></tr><tr><td></td><td>JOSS-Besan</td><td>42</td><td>0.9047619047619048</td><td>0</td><td>49</td><td>0.9591836734693877</td><td>0</td><td>127</td><td>0.9291338582677166</td><td>0</td><td>155</td><td>0.9870967741935484</td><td>0</td></tr><tr><td></td><td>JOSS-hebahussaini</td><td>21</td><td>0.8571428571428571</td><td>0</td><td>30</td><td>1</td><td>0</td><td>99</td><td>0.898989898989899</td><td>0.06060606060606061</td><td>178</td><td>1</td><td>0</td></tr><tr><td></td><td>ME-JOLP04小组</td><td>237</td><td>0.9156118143459916</td><td>0</td><td>393</td><td>0.9872773536895675</td><td>0</td><td>769</td><td>0.9232769830949284</td><td>0.02210663198959688</td><td>1268</td><td>0.9929022082018928</td><td>0</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-JOLP06小组</td><td>JOLP-amwajmisk</td><td>40</td><td>0.975</td><td>0</td><td>42</td><td>1</td><td>0</td><td>107</td><td>0.9532710280373832</td><td>0</td><td>146</td><td>0.9931506849315068</td><td>0</td></tr><tr><td></td><td>51hebamahmoud</td><td>32</td><td>0.96875</td><td>0</td><td>32</td><td>0.96875</td><td>0</td><td>146</td><td>0.952054794520548</td><td>0</td><td>148</td><td>1</td><td>0</td></tr><tr><td></td><td>JOSS-alarouryruba</td><td>40</td><td>0.95</td><td>0</td><td>50</td><td>1</td><td>0</td><td>123</td><td>0.9512195121951219</td><td>0</td><td>214</td><td>0.9813084112149533</td><td>0</td></tr><tr><td></td><td>JOSS-alaamoh</td><td>58</td><td>0.9310344827586207</td><td>0</td><td>67</td><td>1</td><td>0</td><td>141</td><td>0.9574468085106383</td><td>0</td><td>203</td><td>0.9950738916256158</td><td>0</td></tr><tr><td></td><td>JOSS-ayanabaheen</td><td>43</td><td>0.9069767441860465</td><td>0</td><td>42</td><td>0.8571428571428571</td><td>0</td><td>125</td><td>0.976</td><td>0</td><td>180</td><td>1</td><td>0</td></tr><tr><td></td><td>JOLP-omaralhajhasan</td><td>41</td><td>0.9024390243902439</td><td>0</td><td>12</td><td>1</td><td>0</td><td>129</td><td>0.9612403100775194</td><td>0</td><td>153</td><td>1</td><td>0</td></tr><tr><td></td><td>51matar</td><td>38</td><td>0.8947368421052632</td><td>0.07894736842105263</td><td>0</td><td>0</td><td>0</td><td>51</td><td>0.9215686274509803</td><td>0.0196078431372549</td><td>98</td><td>0.9795918367346939</td><td>0</td></tr><tr><td></td><td>JOSS-razanatieh</td><td>41</td><td>0.8780487804878049</td><td>0</td><td>76</td><td>1</td><td>0</td><td>150</td><td>0.9266666666666666</td><td>0.06666666666666667</td><td>196</td><td>0.9948979591836735</td><td>0</td></tr><tr><td></td><td>JOLP-mohammedghanem</td><td>43</td><td>0.8372093023255814</td><td>0</td><td>45</td><td>1</td><td>0</td><td>118</td><td>0.9067796610169492</td><td>0</td><td>167</td><td>0.9940119760479041</td><td>0</td></tr><tr><td></td><td>ME-JOLP06小组</td><td>376</td><td>0.9148936170212766</td><td>0.007978723404255319</td><td>366</td><td>0.9808743169398907</td><td>0</td><td>1090</td><td>0.9467889908256881</td><td>0.01009174311926606</td><td>1505</td><td>0.9933554817275747</td><td>0</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>ME-JOLP08小组</td><td>JOSS-ayamaharmeh</td><td>45</td><td>1</td><td>0</td><td>45</td><td>0.9555555555555556</td><td>0</td><td>128</td><td>0.9609375</td><td>0</td><td>220</td><td>1</td><td>0</td></tr><tr><td></td><td>JOSS-ghosoun</td><td>50</td><td>0.98</td><td>0</td><td>48</td><td>1</td><td>0</td><td>106</td><td>0.9716981132075472</td><td>0</td><td>194</td><td>0.9690721649484536</td><td>0</td></tr><tr><td></td><td>JOLP-ahmadatout</td><td>63</td><td>0.9365079365079365</td><td>0</td><td>40</td><td>1</td><td>0</td><td>119</td><td>0.957983193277311</td><td>0</td><td>184</td><td>1</td><td>0</td></tr><tr><td></td><td>JOSS-marwamelhem</td><td>42</td><td>0.9285714285714286</td><td>0</td><td>49</td><td>1</td><td>0</td><td>123</td><td>0.983739837398374</td><td>0</td><td>159</td><td>1</td><td>0</td></tr><tr><td></td><td>JOSS-randjaber</td><td>55</td><td>0.9272727272727272</td><td>0</td><td>56</td><td>1</td><td>0</td><td>98</td><td>0.9285714285714286</td><td>0</td><td>235</td><td>1</td><td>0</td></tr><tr><td></td><td>JOLP-saraotaili</td><td>52</td><td>0.9230769230769231</td><td>0</td><td>51</td><td>1</td><td>0</td><td>126</td><td>0.9682539682539683</td><td>0</td><td>166</td><td>1</td><td>0</td></tr><tr><td></td><td>51aseelabulsondos</td><td>63</td><td>0.9206349206349206</td><td>0</td><td>38</td><td>1</td><td>0</td><td>137</td><td>0.9416058394160584</td><td>0</td><td>177</td><td>0.9887005649717514</td><td>0</td></tr><tr><td></td><td>JOLP-anasshahin</td><td>46</td><td>0.9130434782608695</td><td>0</td><td>90</td><td>0.9888888888888889</td><td>0</td><td>103</td><td>0.970873786407767</td><td>0</td><td>191</td><td>1</td><td>0</td></tr><tr><td></td><td>JOLP-ahmadamaireh</td><td>41</td><td>0.9024390243902439</td><td>0</td><td>1</td><td>1</td><td>0</td><td>67</td><td>0.9552238805970149</td><td>0</td><td>121</td><td>0.9834710743801653</td><td>0</td></tr><tr><td></td><td>JOLP-tasneemderbas</td><td>60</td><td>0.8333333333333334</td><td>0</td><td>63</td><td>0.9047619047619048</td><td>0</td><td>122</td><td>0.9672131147540983</td><td>0</td><td>197</td><td>0.9949238578680203</td><td>0</td></tr><tr><td></td><td>ME-JOLP08小组</td><td>517</td><td>0.9245647969052224</td><td>0</td><td>481</td><td>0.9812889812889813</td><td>0</td><td>1129</td><td>0.9610274579273693</td><td>0</td><td>1844</td><td>0.9940347071583514</td><td>0</td></tr><tr><td>Group</td><td>Agent</td><td>First call</td><td></td><td></td><td>IUR Feedback</td><td></td><td></td><td>Service warning - absence</td><td></td><td></td><td>Service warning - class interruption</td><td></td><td></td></tr><tr><td></td><td></td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td><td>Total SOPs</td><td>Finished</td><td>Dropped</td></tr><tr><td>MEAdult-JOLP01小组</td><td>JOSS-alanagra</td><td>70</td><td>0.9571428571428572</td><td>0</td><td>0</td><td>0</td><td>0</td><td>161</td><td>0.9627329192546584</td><td>0</td><td>234</td><td>0.9957264957264957</td><td>0</td></tr><tr><td></td><td>51salloum</td><td>57</td><td>0.9473684210526315</td><td>0</td><td>0</td><td>0</td><td>0</td><td>131</td><td>0.9847328244274809</td><td>0.01526717557251908</td><td>204</td><td>1</td><td>0</td></tr><tr><td></td><td>51alshami</td><td>48</td><td>0.9375</td><td>0</td><td>0</td><td>0</td><td>0</td><td>132</td><td>0.9393939393939394</td><td>0</td><td>235</td><td>0.9829787234042553</td><td>0</td></tr><tr><td></td><td>51alshyeb</td><td>55</td><td>0.9272727272727272</td><td>0.01818181818181818</td><td>0</td><td>0</td><td>0</td><td>128</td><td>0.9296875</td><td>0.0390625</td><td>252</td><td>1</td><td>0</td></tr><tr><td></td><td>JOSS-shahed</td><td>49</td><td>0.8979591836734694</td><td>0</td><td>0</td><td>0</td><td>0</td><td>115</td><td>0.9565217391304348</td><td>0</td><td>199</td><td>0.9899497487437185</td><td>0</td></tr><tr><td></td><td>JOLP-maenalqudah</td><td>64</td><td>0.875</td><td>0</td><td>0</td><td>0</td><td>0</td><td>109</td><td>0.926605504587156</td><td>0</td><td>239</td><td>1</td><td>0</td></tr><tr><td></td><td>MEAdult-JOLP01小组</td><td>344</td><td>0.9215116279069767</td><td>0.002906976744186046</td><td>0</td><td>0</td><td>0</td><td>776</td><td>0.9510309278350515</td><td>0.00902061855670103</td><td>1363</td><td>0.9948642699926632</td><td>0</td></tr></table>
-  </main>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="header-title">SOP Performance Report</div>
+                    <div class="header-subtitle">Generated: 2026-01-28 12:15:15</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+        <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+        <button class="tab-btn" onclick="showTab('eglp-teams')">EGLP Teams</button>
+        <button class="tab-btn" onclick="showTab('eglp-ranking')">EGLP Ranking</button>
+        <button class="tab-btn" onclick="showTab('eglp-totals')">EGLP Totals</button>
+        <button class="tab-btn" onclick="showTab('jolp-teams')">JOLP Teams</button>
+        <button class="tab-btn" onclick="showTab('jolp-ranking')">JOLP Ranking</button>
+        <button class="tab-btn" onclick="showTab('jolp-totals')">JOLP Totals</button>
+    </nav>
+
+    <div class="container">
+
+    <style>
+        .tab-nav { display: none; }
+        .tab-content { display: block; }
+        .tab-content.active { display: block; }
+        .header { position: static; }
+    </style>
+    
+        <div id="jolp-teams" class="tab-content active">
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-JOLP02小组 <span class="badge">12 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51thyabat</td>
+                            <td><strong>208</strong></td>
+                            <td>14</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>83</td>
+                            <td><span class="color-pill scale-very-low">63.9%</span></td>
+                            <td>111</td>
+                            <td><span class="color-pill scale-medium-high">94.6%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-raghadaburashideh</td>
+                            <td><strong>311</strong></td>
+                            <td>24</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>93</td>
+                            <td><span class="color-pill scale-medium-high">88.2%</span></td>
+                            <td>147</td>
+                            <td><span class="color-pill scale-high">98.0%</span></td>
+                            <td>47</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-fatensbaih</td>
+                            <td><strong>405</strong></td>
+                            <td>39</td>
+                            <td><span class="color-pill scale-high">97.4%</span></td>
+                            <td>134</td>
+                            <td><span class="color-pill scale-high">94.0%</span></td>
+                            <td>183</td>
+                            <td><span class="color-pill scale-high">99.5%</span></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-medium-high">67.3%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-ayahammad</td>
+                            <td><strong>395</strong></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-high">96.9%</span></td>
+                            <td>128</td>
+                            <td><span class="color-pill scale-medium-high">91.4%</span></td>
+                            <td>191</td>
+                            <td><span class="color-pill scale-high">99.5%</span></td>
+                            <td>44</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-ibrahimkarera</td>
+                            <td><strong>276</strong></td>
+                            <td>22</td>
+                            <td><span class="color-pill scale-high">95.5%</span></td>
+                            <td>109</td>
+                            <td><span class="color-pill scale-medium-high">88.1%</span></td>
+                            <td>125</td>
+                            <td><span class="color-pill scale-very-low">69.6%</span></td>
+                            <td>20</td>
+                            <td><span class="color-pill scale-medium-high">75.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-razanalkhateeb</td>
+                            <td><strong>373</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-medium-high">94.7%</span></td>
+                            <td>133</td>
+                            <td><span class="color-pill scale-high">97.7%</span></td>
+                            <td>154</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>67</td>
+                            <td><span class="color-pill scale-medium-high">80.6%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-Nassar</td>
+                            <td><strong>384</strong></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-medium-high">93.3%</span></td>
+                            <td>115</td>
+                            <td><span class="color-pill scale-high">93.9%</span></td>
+                            <td>176</td>
+                            <td><span class="color-pill scale-high">99.4%</span></td>
+                            <td>63</td>
+                            <td><span class="color-pill scale-high">96.8%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-laialiabid</td>
+                            <td><strong>334</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-medium">89.5%</span></td>
+                            <td>137</td>
+                            <td><span class="color-pill scale-medium-low">81.0%</span></td>
+                            <td>165</td>
+                            <td><span class="color-pill scale-high">98.8%</span></td>
+                            <td>13</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-alkhalaileh01</td>
+                            <td><strong>364</strong></td>
+                            <td>26</td>
+                            <td><span class="color-pill scale-medium">88.5%</span></td>
+                            <td>125</td>
+                            <td><span class="color-pill scale-high">95.2%</span></td>
+                            <td>167</td>
+                            <td><span class="color-pill scale-high">95.8%</span></td>
+                            <td>46</td>
+                            <td><span class="color-pill scale-high">91.3%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-saraqrarah</td>
+                            <td><strong>394</strong></td>
+                            <td>22</td>
+                            <td><span class="color-pill scale-medium">86.4%</span></td>
+                            <td>145</td>
+                            <td><span class="color-pill scale-high">97.2%</span></td>
+                            <td>171</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>56</td>
+                            <td><span class="color-pill scale-medium-high">69.6%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-yousefabutouk</td>
+                            <td><strong>346</strong></td>
+                            <td>25</td>
+                            <td><span class="color-pill scale-medium-low">84.0%</span></td>
+                            <td>106</td>
+                            <td><span class="color-pill scale-medium">84.0%</span></td>
+                            <td>173</td>
+                            <td><span class="color-pill scale-high">98.8%</span></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-abdalazizabsi</td>
+                            <td><strong>329</strong></td>
+                            <td>28</td>
+                            <td><span class="color-pill scale-very-low">71.4%</span></td>
+                            <td>108</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>168</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>25</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>4119</strong></td>
+                            <td><strong>300</strong></td>
+                            <td><strong>91.3%</strong></td>
+                            <td><strong>1416</strong></td>
+                            <td><strong>90.4%</strong></td>
+                            <td><strong>1931</strong></td>
+                            <td><strong>96.8%</strong></td>
+                            <td><strong>472</strong></td>
+                            <td><strong>87.9%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-JOLP03小组 <span class="badge">12 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">51obaidat</td>
+                            <td><strong>327</strong></td>
+                            <td>14</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>94</td>
+                            <td><span class="color-pill scale-high">98.9%</span></td>
+                            <td>178</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>41</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-Dana</td>
+                            <td><strong>348</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>120</td>
+                            <td><span class="color-pill scale-high">98.3%</span></td>
+                            <td>143</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>66</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-manal</td>
+                            <td><strong>396</strong></td>
+                            <td>27</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>126</td>
+                            <td><span class="color-pill scale-very-low">95.2%</span></td>
+                            <td>185</td>
+                            <td><span class="color-pill scale-low">99.5%</span></td>
+                            <td>58</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-alanoudalsarkhi</td>
+                            <td><strong>367</strong></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-high">96.7%</span></td>
+                            <td>134</td>
+                            <td><span class="color-pill scale-low">95.5%</span></td>
+                            <td>159</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>44</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-Musa</td>
+                            <td><strong>163</strong></td>
+                            <td>14</td>
+                            <td><span class="color-pill scale-medium">92.9%</span></td>
+                            <td>58</td>
+                            <td><span class="color-pill scale-very-low">94.8%</span></td>
+                            <td>91</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51alheet</td>
+                            <td><strong>346</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-medium">89.5%</span></td>
+                            <td>112</td>
+                            <td><span class="color-pill scale-very-low">94.6%</span></td>
+                            <td>173</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51shahin</td>
+                            <td><strong>358</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-medium">89.5%</span></td>
+                            <td>117</td>
+                            <td><span class="color-pill scale-medium-low">96.6%</span></td>
+                            <td>183</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>39</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-yaraaburahma</td>
+                            <td><strong>376</strong></td>
+                            <td>41</td>
+                            <td><span class="color-pill scale-medium-low">87.8%</span></td>
+                            <td>125</td>
+                            <td><span class="color-pill scale-medium">96.8%</span></td>
+                            <td>163</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>47</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-rahafalmasri</td>
+                            <td><strong>346</strong></td>
+                            <td>16</td>
+                            <td><span class="color-pill scale-medium-low">87.5%</span></td>
+                            <td>111</td>
+                            <td><span class="color-pill scale-medium-high">98.2%</span></td>
+                            <td>160</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>59</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-rahafsalem</td>
+                            <td><strong>287</strong></td>
+                            <td>19</td>
+                            <td><span class="color-pill scale-low">84.2%</span></td>
+                            <td>76</td>
+                            <td><span class="color-pill scale-very-low">94.7%</span></td>
+                            <td>150</td>
+                            <td><span class="color-pill scale-very-low">99.3%</span></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-suadalaghwani</td>
+                            <td><strong>358</strong></td>
+                            <td>24</td>
+                            <td><span class="color-pill scale-low">83.3%</span></td>
+                            <td>126</td>
+                            <td><span class="color-pill scale-medium">96.8%</span></td>
+                            <td>169</td>
+                            <td><span class="color-pill scale-very-low">99.4%</span></td>
+                            <td>39</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51khalaf</td>
+                            <td><strong>385</strong></td>
+                            <td>14</td>
+                            <td><span class="color-pill scale-very-low">78.6%</span></td>
+                            <td>131</td>
+                            <td><span class="color-pill scale-very-low">94.7%</span></td>
+                            <td>189</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>51</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>4057</strong></td>
+                            <td><strong>256</strong></td>
+                            <td><strong>91.0%</strong></td>
+                            <td><strong>1330</strong></td>
+                            <td><strong>96.3%</strong></td>
+                            <td><strong>1943</strong></td>
+                            <td><strong>99.8%</strong></td>
+                            <td><strong>528</strong></td>
+                            <td><strong>100.0%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-JOLP04小组 <span class="badge">7 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">JOSS-Refai</td>
+                            <td><strong>410</strong></td>
+                            <td>33</td>
+                            <td><span class="color-pill scale-high">93.9%</span></td>
+                            <td>123</td>
+                            <td><span class="color-pill scale-high">94.3%</span></td>
+                            <td>197</td>
+                            <td><span class="color-pill scale-very-low">98.5%</span></td>
+                            <td>57</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-lumasalhab</td>
+                            <td><strong>393</strong></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-high">92.9%</span></td>
+                            <td>96</td>
+                            <td><span class="color-pill scale-high">93.8%</span></td>
+                            <td>181</td>
+                            <td><span class="color-pill scale-very-low">98.3%</span></td>
+                            <td>74</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-shahedomari</td>
+                            <td><strong>369</strong></td>
+                            <td>39</td>
+                            <td><span class="color-pill scale-medium-high">92.3%</span></td>
+                            <td>109</td>
+                            <td><span class="color-pill scale-very-low">86.2%</span></td>
+                            <td>154</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>67</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-nadamakahleh</td>
+                            <td><strong>382</strong></td>
+                            <td>25</td>
+                            <td><span class="color-pill scale-medium-high">92.0%</span></td>
+                            <td>108</td>
+                            <td><span class="color-pill scale-high">94.4%</span></td>
+                            <td>203</td>
+                            <td><span class="color-pill scale-medium-high">99.5%</span></td>
+                            <td>46</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-rahafsalah</td>
+                            <td><strong>412</strong></td>
+                            <td>35</td>
+                            <td><span class="color-pill scale-medium-high">91.4%</span></td>
+                            <td>107</td>
+                            <td><span class="color-pill scale-high">94.4%</span></td>
+                            <td>200</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>70</td>
+                            <td><span class="color-pill scale-very-low">95.7%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-Besan</td>
+                            <td><strong>373</strong></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-medium">90.5%</span></td>
+                            <td>127</td>
+                            <td><span class="color-pill scale-medium-high">92.9%</span></td>
+                            <td>155</td>
+                            <td><span class="color-pill scale-low">98.7%</span></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-very-low">95.9%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-hebahussaini</td>
+                            <td><strong>328</strong></td>
+                            <td>21</td>
+                            <td><span class="color-pill scale-very-low">85.7%</span></td>
+                            <td>99</td>
+                            <td><span class="color-pill scale-medium-low">89.9%</span></td>
+                            <td>178</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>30</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>2667</strong></td>
+                            <td><strong>237</strong></td>
+                            <td><strong>91.6%</strong></td>
+                            <td><strong>769</strong></td>
+                            <td><strong>92.3%</strong></td>
+                            <td><strong>1268</strong></td>
+                            <td><strong>99.3%</strong></td>
+                            <td><strong>393</strong></td>
+                            <td><strong>98.7%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-JOLP06小组 <span class="badge">9 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">JOLP-amwajmisk</td>
+                            <td><strong>335</strong></td>
+                            <td>40</td>
+                            <td><span class="color-pill scale-high">97.5%</span></td>
+                            <td>107</td>
+                            <td><span class="color-pill scale-medium-high">95.3%</span></td>
+                            <td>146</td>
+                            <td><span class="color-pill scale-medium">99.3%</span></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51hebamahmoud</td>
+                            <td><strong>358</strong></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-high">96.9%</span></td>
+                            <td>146</td>
+                            <td><span class="color-pill scale-medium">95.2%</span></td>
+                            <td>148</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>32</td>
+                            <td><span class="color-pill scale-high">96.9%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-alarouryruba</td>
+                            <td><strong>427</strong></td>
+                            <td>40</td>
+                            <td><span class="color-pill scale-medium-high">95.0%</span></td>
+                            <td>123</td>
+                            <td><span class="color-pill scale-medium">95.1%</span></td>
+                            <td>214</td>
+                            <td><span class="color-pill scale-very-low">98.1%</span></td>
+                            <td>50</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-alaamoh</td>
+                            <td><strong>469</strong></td>
+                            <td>58</td>
+                            <td><span class="color-pill scale-medium-high">93.1%</span></td>
+                            <td>141</td>
+                            <td><span class="color-pill scale-medium-high">95.7%</span></td>
+                            <td>203</td>
+                            <td><span class="color-pill scale-medium-high">99.5%</span></td>
+                            <td>67</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-ayanabaheen</td>
+                            <td><strong>390</strong></td>
+                            <td>43</td>
+                            <td><span class="color-pill scale-medium">90.7%</span></td>
+                            <td>125</td>
+                            <td><span class="color-pill scale-high">97.6%</span></td>
+                            <td>180</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-high">85.7%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-omaralhajhasan</td>
+                            <td><strong>335</strong></td>
+                            <td>41</td>
+                            <td><span class="color-pill scale-medium-low">90.2%</span></td>
+                            <td>129</td>
+                            <td><span class="color-pill scale-medium-high">96.1%</span></td>
+                            <td>153</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>12</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51matar</td>
+                            <td><strong>187</strong></td>
+                            <td>38</td>
+                            <td><span class="color-pill scale-medium-low">89.5%</span></td>
+                            <td>51</td>
+                            <td><span class="color-pill scale-low">92.2%</span></td>
+                            <td>98</td>
+                            <td><span class="color-pill scale-very-low">98.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-very-low">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-razanatieh</td>
+                            <td><strong>463</strong></td>
+                            <td>41</td>
+                            <td><span class="color-pill scale-low">87.8%</span></td>
+                            <td>150</td>
+                            <td><span class="color-pill scale-low">92.7%</span></td>
+                            <td>196</td>
+                            <td><span class="color-pill scale-medium-high">99.5%</span></td>
+                            <td>76</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-mohammedghanem</td>
+                            <td><strong>373</strong></td>
+                            <td>43</td>
+                            <td><span class="color-pill scale-very-low">83.7%</span></td>
+                            <td>118</td>
+                            <td><span class="color-pill scale-very-low">90.7%</span></td>
+                            <td>167</td>
+                            <td><span class="color-pill scale-medium-high">99.4%</span></td>
+                            <td>45</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>3337</strong></td>
+                            <td><strong>376</strong></td>
+                            <td><strong>91.5%</strong></td>
+                            <td><strong>1090</strong></td>
+                            <td><strong>94.7%</strong></td>
+                            <td><strong>1505</strong></td>
+                            <td><strong>99.3%</strong></td>
+                            <td><strong>366</strong></td>
+                            <td><strong>98.1%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>ME-JOLP08小组 <span class="badge">10 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">JOSS-ayamaharmeh</td>
+                            <td><strong>438</strong></td>
+                            <td>45</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>128</td>
+                            <td><span class="color-pill scale-medium">96.1%</span></td>
+                            <td>220</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>45</td>
+                            <td><span class="color-pill scale-medium">95.6%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-ghosoun</td>
+                            <td><strong>398</strong></td>
+                            <td>50</td>
+                            <td><span class="color-pill scale-high">98.0%</span></td>
+                            <td>106</td>
+                            <td><span class="color-pill scale-medium-high">97.2%</span></td>
+                            <td>194</td>
+                            <td><span class="color-pill scale-very-low">96.9%</span></td>
+                            <td>48</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-ahmadatout</td>
+                            <td><strong>406</strong></td>
+                            <td>63</td>
+                            <td><span class="color-pill scale-medium">93.7%</span></td>
+                            <td>119</td>
+                            <td><span class="color-pill scale-medium">95.8%</span></td>
+                            <td>184</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>40</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-marwamelhem</td>
+                            <td><strong>373</strong></td>
+                            <td>42</td>
+                            <td><span class="color-pill scale-medium">92.9%</span></td>
+                            <td>123</td>
+                            <td><span class="color-pill scale-high">98.4%</span></td>
+                            <td>159</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-randjaber</td>
+                            <td><strong>444</strong></td>
+                            <td>55</td>
+                            <td><span class="color-pill scale-medium">92.7%</span></td>
+                            <td>98</td>
+                            <td><span class="color-pill scale-very-low">92.9%</span></td>
+                            <td>235</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>56</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-saraotaili</td>
+                            <td><strong>395</strong></td>
+                            <td>52</td>
+                            <td><span class="color-pill scale-medium">92.3%</span></td>
+                            <td>126</td>
+                            <td><span class="color-pill scale-medium-high">96.8%</span></td>
+                            <td>166</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>51</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51aseelabulsondos</td>
+                            <td><strong>415</strong></td>
+                            <td>63</td>
+                            <td><span class="color-pill scale-medium">92.1%</span></td>
+                            <td>137</td>
+                            <td><span class="color-pill scale-low">94.2%</span></td>
+                            <td>177</td>
+                            <td><span class="color-pill scale-medium">98.9%</span></td>
+                            <td>38</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-anasshahin</td>
+                            <td><strong>430</strong></td>
+                            <td>46</td>
+                            <td><span class="color-pill scale-medium-low">91.3%</span></td>
+                            <td>103</td>
+                            <td><span class="color-pill scale-medium-high">97.1%</span></td>
+                            <td>191</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>90</td>
+                            <td><span class="color-pill scale-high">98.9%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-ahmadamaireh</td>
+                            <td><strong>230</strong></td>
+                            <td>41</td>
+                            <td><span class="color-pill scale-medium-low">90.2%</span></td>
+                            <td>67</td>
+                            <td><span class="color-pill scale-medium-low">95.5%</span></td>
+                            <td>121</td>
+                            <td><span class="color-pill scale-medium-low">98.3%</span></td>
+                            <td>1</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-tasneemderbas</td>
+                            <td><strong>442</strong></td>
+                            <td>60</td>
+                            <td><span class="color-pill scale-very-low">83.3%</span></td>
+                            <td>122</td>
+                            <td><span class="color-pill scale-medium-high">96.7%</span></td>
+                            <td>197</td>
+                            <td><span class="color-pill scale-high">99.5%</span></td>
+                            <td>63</td>
+                            <td><span class="color-pill scale-very-low">90.5%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>3971</strong></td>
+                            <td><strong>517</strong></td>
+                            <td><strong>92.5%</strong></td>
+                            <td><strong>1129</strong></td>
+                            <td><strong>96.1%</strong></td>
+                            <td><strong>1844</strong></td>
+                            <td><strong>99.4%</strong></td>
+                            <td><strong>481</strong></td>
+                            <td><strong>98.1%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="team-detail">
+            <div class="team-detail-header" onclick="toggleTeam(this)">
+                <h3>MEAdult-JOLP01小组 <span class="badge">6 agents</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="team-detail-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="left" style="width: 180px;">Agent</th>
+                            <th style="width: 100px;">Total SOPs</th>
+                            <th style="min-width: 80px;">First call<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">First call<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">absence<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">absence<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">class interruption<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">class interruption<br><small style="font-weight:400;">Finished</small></th>
+                            <th style="min-width: 80px;">IUR Feedback<br><small style="font-weight:400;">Total</small></th>
+                            <th style="min-width: 90px;">IUR Feedback<br><small style="font-weight:400;">Finished</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left">JOSS-alanagra</td>
+                            <td><strong>465</strong></td>
+                            <td>70</td>
+                            <td><span class="color-pill scale-high">95.7%</span></td>
+                            <td>161</td>
+                            <td><span class="color-pill scale-medium">96.3%</span></td>
+                            <td>234</td>
+                            <td><span class="color-pill scale-medium-high">99.6%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51salloum</td>
+                            <td><strong>392</strong></td>
+                            <td>57</td>
+                            <td><span class="color-pill scale-high">94.7%</span></td>
+                            <td>131</td>
+                            <td><span class="color-pill scale-high">98.5%</span></td>
+                            <td>204</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51alshami</td>
+                            <td><strong>415</strong></td>
+                            <td>48</td>
+                            <td><span class="color-pill scale-medium-high">93.8%</span></td>
+                            <td>132</td>
+                            <td><span class="color-pill scale-low">93.9%</span></td>
+                            <td>235</td>
+                            <td><span class="color-pill scale-very-low">98.3%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">51alshyeb</td>
+                            <td><strong>435</strong></td>
+                            <td>55</td>
+                            <td><span class="color-pill scale-medium">92.7%</span></td>
+                            <td>128</td>
+                            <td><span class="color-pill scale-very-low">93.0%</span></td>
+                            <td>252</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOSS-shahed</td>
+                            <td><strong>363</strong></td>
+                            <td>49</td>
+                            <td><span class="color-pill scale-low">89.8%</span></td>
+                            <td>115</td>
+                            <td><span class="color-pill scale-medium">95.7%</span></td>
+                            <td>199</td>
+                            <td><span class="color-pill scale-medium-low">99.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td class="left">JOLP-maenalqudah</td>
+                            <td><strong>412</strong></td>
+                            <td>64</td>
+                            <td><span class="color-pill scale-very-low">87.5%</span></td>
+                            <td>109</td>
+                            <td><span class="color-pill scale-very-low">92.7%</span></td>
+                            <td>239</td>
+                            <td><span class="color-pill scale-high">100.0%</span></td>
+                            <td>0</td>
+                            <td><span class="color-pill scale-medium">0.0%</span></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="left"><strong>Team Total</strong></td>
+                            <td><strong>2483</strong></td>
+                            <td><strong>344</strong></td>
+                            <td><strong>92.2%</strong></td>
+                            <td><strong>776</strong></td>
+                            <td><strong>95.1%</strong></td>
+                            <td><strong>1363</strong></td>
+                            <td><strong>99.5%</strong></td>
+                            <td><strong>0</strong></td>
+                            <td><strong>0.0%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+
+            // Update active button if event exists (user click)
+            if (typeof event !== 'undefined' && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Programmatic call - find and activate the correct button
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    if (btn.textContent.toLowerCase().includes(tabId.replace('-', ' '))) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            // Recalculate heights for newly visible tab
+            setTimeout(function() {
+                document.querySelectorAll('#' + tabId + ' .team-detail-body:not(.collapsed)').forEach(body => {
+                    body.style.maxHeight = body.scrollHeight + 'px';
+                });
+            }, 10);
+        }
+
+        // Check URL hash on load to show specific tab (for screenshots)
+        window.addEventListener('DOMContentLoaded', function() {
+            if (window.location.hash) {
+                const tabId = window.location.hash.substring(1);
+                showTab(tabId);
+            }
+        });
+
+        function showSubTab(group, subTabId) {
+            const groupPrefix = group + '-';
+
+            // Hide all sub-tab contents for this group
+            document.querySelectorAll('[id^="' + groupPrefix + '"]').forEach(content => {
+                if (content.classList.contains('sub-tab-content')) {
+                    content.classList.remove('active');
+                }
+            });
+
+            // Remove active class from all sub-tab buttons in this group's parent container
+            if (typeof event !== 'undefined' && event.target) {
+                const nav = event.target.closest('.sub-tab-nav');
+                if (nav) {
+                    nav.querySelectorAll('.sub-tab-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    event.target.classList.add('active');
+                }
+            }
+
+            // Show the selected sub-tab
+            const targetId = groupPrefix + subTabId;
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.classList.add('active');
+            }
+        }
+
+        function toggleTeam(element) {
+            const header = element;
+            const body = element.nextElementSibling;
+
+            header.classList.toggle('collapsed');
+            body.classList.toggle('collapsed');
+
+            if (!body.classList.contains('collapsed')) {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            }
+        }
+
+        // Initialize team bodies
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial heights for visible tab
+            document.querySelectorAll('.tab-content.active .team-detail-body').forEach(body => {
+                body.style.maxHeight = body.scrollHeight + 'px';
+            });
+        });
+    </script>
 </body>
 </html>
